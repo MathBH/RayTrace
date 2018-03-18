@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "..\RayTrace2\RayCam.h"
+#include "RayCam.h"
 #include <gmtl\Point.h>
 #include <string>
 #include <sstream>
@@ -8,9 +8,9 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#include "..\RayTrace2\TraceableObject.h"
-#include "..\RayTrace2\SphereTraceable.h"
-#include "..\RayTrace2\Scene.h"
+#include "TraceableObject.h"
+#include "SphereTraceable.h"
+#include "Scene.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
