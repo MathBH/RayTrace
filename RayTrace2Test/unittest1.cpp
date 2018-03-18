@@ -58,23 +58,23 @@ namespace SceneObjectsTestSpace
 			}
 			return myScene;
 		}
+		TEST_METHOD(sceneGenHelperTest) {
+			int numTraceables = 50;
+			Scene s1 = generateScene(numTraceables);
+			int counter = 0;
+			for (TraceableObject * obj : s1.objects.traceable) {
+				counter++;
+			}
+
+			std::wstringstream sstream = std::wstringstream();
+			sstream << "expected counter: " << numTraceables << "\n counter:" << counter << '\n';
+			std::wstring fail_message = sstream.str();
+
+			Assert::IsTrue(counter == numTraceables, fail_message.c_str());
+		}
 		// HELPERS//------------------------------------------------------------------------------------------
 
 		TEST_METHOD(test1) {
-			int numTraceables = 3;
-			int expectedCounterPos = numTraceables - 1;
-			SphereTraceable s = SphereTraceable();
-			//Scene s1 = generateScene(numTraceables);
-			//int counter = 0;
-			//for (TraceableObject * obj : s1.objects.traceable) {
-			//	counter++;
-			//}
-			//
-			//std::wstringstream sstream = std::wstringstream();
-			//sstream << "expected counter: " << expectedCounterPos << "\n counter:" << counter << '\n';
-			//std::wstring fail_message = sstream.str();
-			//
-			//Assert::IsTrue(counter == expectedCounterPos);
 		}
 	};
 }
