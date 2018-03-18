@@ -74,7 +74,6 @@ protected:
 	double xVal;
 	double yVal;
 	
-	RayIterator() : RayIterator(DEFAULT_CAM_POS, ProjectionPlane(), ResolutionSettings(), DEFAULT_ANTIALIAS) {}
 	RayIterator(gmtl::Point3d camPos, ProjectionPlane projPlane,
 		ResolutionSettings resolutionSettings, double antiAlias)
 		: xVal(0), yVal(0), cameraPos(camPos), projectionPlane(projPlane)
@@ -134,7 +133,7 @@ public:
 	gmtl::Vec3d forward;
 	gmtl::Vec3d up;
 
-	RayCam()
+	RayCam() : position(DEFAULT_CAM_POS), forward(DEFAULT_CAM_FORWARD), up(DEFAULT_CAM_UP)
 	{
 		init();
 	}

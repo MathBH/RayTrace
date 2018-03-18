@@ -23,7 +23,7 @@ bool ResolutionEquals(ResolutionSettings& r0, ResolutionSettings& r1) {
 // Wraper class for accessing RayIterator protected data
 	class TestRIT : RayIterator {
 	public:
-		TestRIT() : RayIterator() {}
+		TestRIT() : RayIterator(DEFAULT_CAM_POS, ProjectionPlane(), ResolutionSettings(), DEFAULT_ANTIALIAS) {}
 		TestRIT(gmtl::Point3d camPos, ProjectionPlane projPlane,
 			ResolutionSettings resSet, double antiAlias) 
 		: RayIterator(camPos, projPlane, resSet, antiAlias){}
@@ -207,6 +207,17 @@ namespace RayIteratorTestSpace
 
 	public:
 
+		TEST_METHOD(HELPERResolutionSettingsEquals) {
+			ResolutionSettings rs0 = ResolutionSettings(4.0, 1.0);
+			ResolutionSettings rs1 = ResolutionSettings(408.0, 101.0);
+			ResolutionSettings rs2 = ResolutionSettings(408.000001, 101.00001);
+			ResolutionSettings rs4 = ResolutionSettings(408.0, 101.0);
+
+			Assert::IsFalse(ResolutionEquals(rs1, rs0));
+			Assert::IsTrue(ResolutionEquals(rs1, rs4));
+			Assert::IsFalse(ResolutionEquals(rs1, rs2));
+		}
+
 		TEST_METHOD(ResolutionSettingsConstructor) {
 			ResolutionSettings rs = ResolutionSettings();
 			Assert::IsTrue(rs.height == DEFAULT_RESOLUTION_HEIGHT);
@@ -241,17 +252,6 @@ namespace RayIteratorTestSpace
 
 			Assert::IsTrue(pp1.width > pp0.width);
 			Assert::IsTrue(pp1.width < pp2.width);
-		}
-
-		TEST_METHOD(ResolutionSettingsEquals) {
-			ResolutionSettings rs0 = ResolutionSettings(4.0, 1.0);
-			ResolutionSettings rs1 = ResolutionSettings(408.0, 101.0);
-			ResolutionSettings rs2 = ResolutionSettings(408.000001, 101.00001);
-			ResolutionSettings rs4 = ResolutionSettings(408.0, 101.0);
-
-			Assert::IsFalse(ResolutionEquals(rs1, rs0));
-			Assert::IsTrue(ResolutionEquals(rs1, rs4));
-			Assert::IsFalse(ResolutionEquals(rs1, rs2));
 		}
 
 		TEST_METHOD(RayIteratorConstructorEmpty) {
