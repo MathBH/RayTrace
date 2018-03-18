@@ -47,35 +47,106 @@ namespace SceneObjectsTestSpace
 {
 	TEST_CLASS(SceneObjectsTest)
 	{
-		// HELPERS//------------------------------------------------------------------------------------------
-		Scene generateScene(int numTraceables) {
-			Scene myScene = Scene();
+		// DEBUG HELPERS //----------------------------------------------------------------------------------
+		void sceneFillTraceablesTest(int numTraceables, int expectedNum)
+		{
+			Scene s1 = Scene();
 			if (numTraceables > 0) {
 				for (int i = 0; i < numTraceables; i++) {
 					SphereTraceable sphere = SphereTraceable();
-					myScene.objects.traceable.push_front(&sphere);
+					s1.objects.traceable.push_front(&sphere);
 				}
 			}
-			return myScene;
-		}
-		TEST_METHOD(SceneGenHelperTest) {
-			int numTraceables = 50;
-			Scene s1 = generateScene(numTraceables);
 			int counter = 0;
 			for (TraceableObject * obj : s1.objects.traceable) {
 				counter++;
 			}
 
 			std::wstringstream sstream = std::wstringstream();
-			sstream << "expected counter: " << numTraceables << "\n counter:" << counter << '\n';
+			sstream << "expected counter: " << expectedNum << "\n counter:" << counter << '\n';
 			std::wstring fail_message = sstream.str();
 
-			Assert::IsTrue(counter == numTraceables, fail_message.c_str());
+			Assert::IsTrue(counter == expectedNum, fail_message.c_str());
 		}
-		// HELPERS//------------------------------------------------------------------------------------------
 
-		TEST_METHOD(SceneAddAndRemove) {
-			//Assert::
+		// TESTS //------------------------------------------------------------------------------------------
+		TEST_METHOD(TraceableInterfaceTest) // Test that subclasses can be made, individually overriding the tryCollision function
+		{
+			static bool subFunction1 = false;
+			static bool subFunction2 = false;
+			class TraceableTest1 : TraceableObject {
+			public:
+				RayCollisionResult tryCollision(gmtl::Rayd ray) override {
+					subFunction1 = true;
+					return RayCollisionResult();
+				}
+			};
+			class TraceableTest2 : TraceableObject {
+			public:
+				RayCollisionResult tryCollision(gmtl::Rayd ray) override {
+					subFunction2 = true;
+					return RayCollisionResult();
+				}
+			};
+			TraceableTest1 t1 = TraceableTest1();
+			TraceableTest2 t2 = TraceableTest2();
+			gmtl::Rayd r = gmtl::Rayd();
+
+			Assert::IsFalse(subFunction1, L"untested1");
+			Assert::IsFalse(subFunction2, L"untested2");
+			t1.tryCollision(r);
+			Assert::IsTrue(subFunction1, L"untested1");
+			Assert::IsFalse(subFunction2, L"untested2");
+			t2.tryCollision(r);
+			Assert::IsTrue(subFunction1, L"untested1");
+			Assert::IsTrue(subFunction2, L"untested2");
+		}
+
+		TEST_METHOD(SceneAddTraceablesTest) {
+			int numTraceables0 = 0;
+			int numTraceables1 = 7;
+			int numTraceables2 = 617;
+			int numTraceables3In = -107;
+			int numTraceables3Out = 0;
+			sceneFillTraceablesTest(numTraceables0, numTraceables0);
+			sceneFillTraceablesTest(numTraceables1, numTraceables1);
+			sceneFillTraceablesTest(numTraceables2, numTraceables2);
+			sceneFillTraceablesTest(numTraceables3In, numTraceables3Out);
+		}
+
+		TEST_METHOD(SceneRemoveTraceablesTest) {
+			Scene s = Scene();
+			SphereTraceable sphere1 = SphereTraceable();
+			SphereTraceable sphere2 = SphereTraceable();
+
+			//Iteration 1
+
+				// CONTROL: Making sure the base structure is built properly for test
+				Assert::IsTrue(s.objects.traceable.empty());
+				s.objects.traceable.push_front(&sphere1);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere1);
+				s.objects.traceable.push_front(&sphere2);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere2);
+
+				//Remove test
+				s.objects.traceable.remove(&sphere2);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere1);
+				s.objects.traceable.remove(&sphere1);
+				Assert::IsTrue(s.objects.traceable.empty());
+
+			//Iteration 2
+
+				// CONTROL: Making sure the base structure is built properly for test
+				s.objects.traceable.push_front(&sphere1);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere1);
+				s.objects.traceable.push_front(&sphere2);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere2);
+
+				//Remove test
+				s.objects.traceable.remove(&sphere1);
+				Assert::IsTrue(s.objects.traceable.front() == &sphere2);
+				s.objects.traceable.remove(&sphere2);
+				Assert::IsTrue(s.objects.traceable.empty());
 		}
 	};
 }
