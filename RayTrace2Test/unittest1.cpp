@@ -58,7 +58,7 @@ namespace SceneObjectsTestSpace
 			}
 			return myScene;
 		}
-		TEST_METHOD(sceneGenHelperTest) {
+		TEST_METHOD(SceneGenHelperTest) {
 			int numTraceables = 50;
 			Scene s1 = generateScene(numTraceables);
 			int counter = 0;
@@ -74,7 +74,8 @@ namespace SceneObjectsTestSpace
 		}
 		// HELPERS//------------------------------------------------------------------------------------------
 
-		TEST_METHOD(test1) {
+		TEST_METHOD(SceneAddAndRemove) {
+			//Assert::
 		}
 	};
 }
