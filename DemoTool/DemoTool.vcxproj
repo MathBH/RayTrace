@@ -73,7 +73,7 @@
     <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
+    <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace\RayTrace2;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -99,7 +99,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Jen\source\repos\RayTrace2\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Jen\source\repos\RayTrace\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>RayTrace2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>

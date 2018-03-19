@@ -135,7 +135,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Jen\source\repos\RayTrace2\RayTrace2;J:\usr\local\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jen\source\repos\RayTrace\RayTrace2;J:\usr\local\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
   </PropertyGroup>
@@ -177,7 +177,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\Users\Jen\source\repos\RayTrace2\Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Jen\source\repos\RayTrace\Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>RayTrace2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
