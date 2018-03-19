@@ -29,5 +29,5 @@ public:
 	void setRadius(double r) { sphereData.setRadius(r); }
 	void setPosition(gmtl::Point3d p) { sphereData.setCenter(p); }
 
-	RayCollisionResult tryCollision(gmtl::Rayd ray) override;
+	RayCollisionResult tryCollision(const gmtl::Rayd ray) override;
 };

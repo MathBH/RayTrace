@@ -18,32 +18,50 @@
 
 class CollisionPoint
 {
-public:
+private:
 	gmtl::Vec3d normal;
 	gmtl::Point3d position;
-	double reflectiveIndex;
-	double refractiveIndex;
 
-	CollisionPoint() : normal(DEFAULT_POINT_NORM), position(DEFAULT_POINT_POS),
-		reflectiveIndex(DEFAULT_REFLECTIVE_INDEX), refractiveIndex(DEFAULT_REFRACTIVE_INDEX){}
-	CollisionPoint(gmtl::Point3d p, gmtl::Vec3d n, double rflct, double rfrct) {
-		normal = n;
-		position = p;
-		reflectiveIndex = rflct;
-		refractiveIndex = rfrct;
+public:
+
+	CollisionPoint() : normal(DEFAULT_POINT_NORM), position(DEFAULT_POINT_POS){}
+	CollisionPoint(gmtl::Point3d p, gmtl::Vec3d n) : normal(n), position(p){}
+
+	gmtl::Vec3d getNormal() {
+		return gmtl::Vec3d(normal);
+	}
+
+	gmtl::Point3d getPosition() {
+		return gmtl::Point3d(position);
 	}
 };
 
 class RayCollisionResult {
-public:
-	bool collision;
+private:
+	bool collided;
 	CollisionPoint collisionPoint;
+public:
 
-	RayCollisionResult() : collision(false), collisionPoint(CollisionPoint()){}
-	RayCollisionResult(bool col, CollisionPoint colPoint) : collision(col), collisionPoint(colPoint){}
+	RayCollisionResult() : collided(false), collisionPoint(CollisionPoint()){}
+	RayCollisionResult(bool col, CollisionPoint colPoint) : collided(col), collisionPoint(colPoint){}
+
+	void setCollided(bool col)
+	{
+		collided = col;
+	}
+	void setCollisionPoint(CollisionPoint colPoint) {
+		collisionPoint = colPoint;
+	}
+	bool getCollided()
+	{
+		return collided;
+	}
+	CollisionPoint getCollisionPoint() {
+		return collisionPoint;
+	}
 };
 
 class TraceableObject {
 public:
-	virtual RayCollisionResult tryCollision(gmtl::Rayd ray) = 0;
+	virtual RayCollisionResult tryCollision(const gmtl::Rayd ray) = 0;
 };

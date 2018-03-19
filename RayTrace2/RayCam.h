@@ -15,16 +15,16 @@
 #define DEFAULT_D_NEAR 0.1
 #endif
 #ifndef DEFAULT_ANTIALIAS
-#define DEFAULT_ANTIALIAS 16.0
+#define DEFAULT_ANTIALIAS 16
 #endif
 #ifndef DEFAULT_ASPECT_RATIO
 #define DEFAULT_ASPECT_RATIO 1.33
 #endif
 #ifndef DEFAULT_RESOLUTION_WIDTH
-#define DEFAULT_RESOLUTION_WIDTH 640.0
+#define DEFAULT_RESOLUTION_WIDTH 640
 #endif
 #ifndef DEFAULT_RESOLUTION_HEIGHT
-#define DEFAULT_RESOLUTION_HEIGHT 480.0
+#define DEFAULT_RESOLUTION_HEIGHT 480
 #endif
 #ifndef DEFAULT_CAM_POS
 #define DEFAULT_CAM_POS gmtl::Point3d(0.0,0.0,0.0)
@@ -38,11 +38,11 @@
 
 class ResolutionSettings {
 public:
-	double width;
-	double height;
+	int width;
+	int height;
 
 	ResolutionSettings() : width(DEFAULT_RESOLUTION_WIDTH), height(DEFAULT_RESOLUTION_HEIGHT) {}
-	ResolutionSettings(double w, double h) : width(w), height(h){}
+	ResolutionSettings(int w, int h) : width(w), height(h){}
 };
 
 class ProjectionPlane {
@@ -69,46 +69,50 @@ class RayIterator
 protected:
 	gmtl::Point3d cameraPos;
 	ProjectionPlane projectionPlane;
-	double xDrift;
-	double yDrift;
-	double xVal;
-	double yVal;
+	int xFullScale;
+	int yFullScale;
+	int xCursor;
+	int yCursor;
 	
 	RayIterator(gmtl::Point3d camPos, ProjectionPlane projPlane,
-		ResolutionSettings resolutionSettings, double antiAlias)
-		: xVal(0), yVal(0), cameraPos(camPos), projectionPlane(projPlane)
-	{
-		yDrift = 1 / resolutionSettings.height* antiAlias;
-		xDrift = 1 / resolutionSettings.width* antiAlias;
-	}
+		ResolutionSettings resolutionSettings, int antiAlias)
+		: xCursor(0), yCursor(0), xFullScale(resolutionSettings.width*antiAlias),
+		yFullScale(resolutionSettings.height*antiAlias), cameraPos(camPos), projectionPlane(projPlane){}
 
 	gmtl::Point3d getPointOnPlane(double xVal, double yVal) {
 		double x = projectionPlane.x0 + projectionPlane.width * xVal;
 		double y = projectionPlane.y0 + projectionPlane.height * yVal;
 		return gmtl::Point3d(x, y, projectionPlane.z);
 	}
+
 public:
 	friend class RayCam;
 	~RayIterator() {}
 
 	bool hasNext()
 	{ 
-		return !(xVal == (1 - xDrift) && yVal == (1 - yDrift));
+		return yCursor < yFullScale;
 	}
 	gmtl::Rayd next()
 	{
 		gmtl::Rayd ray = gmtl::Rayd();
 
-		xVal += xDrift;			//Update x,y values
-		if (xVal >= 1) {
-			xVal = 0;
-			yVal += yDrift;
-		}
 
-		gmtl::Point3d pointOnPlane = getPointOnPlane(xVal, yVal); // get point on the plane,
+		double xPos = xCursor / (double)xFullScale;
+		double yPos = yCursor / (double)yFullScale;
+		gmtl::Point3d pointOnPlane = getPointOnPlane(xPos, yPos); // get point on the plane,
 		gmtl::Vec3d rayDir = gmtl::makeNormal(gmtl::Vec3d(pointOnPlane)); // since the plane is centered on y and x and z from the center, this is bassically a direction vector
 		ray.setOrigin(cameraPos);
 		ray.setDir(rayDir);
+
+		// Increment x, y indices
+		xCursor++;
+		if (xCursor >= xFullScale)
+		{
+			xCursor = 0;
+			yCursor ++;
+		}
+
 		return ray;
 	}
 };
@@ -119,7 +123,7 @@ class RayCam
 protected:
 	ResolutionSettings resolutionSettings;
 	ProjectionPlane projectionPlane;
-	double antiAlias;
+	int antiAlias;
 
 	void init()
 	{
@@ -151,7 +155,7 @@ public:
 	{
 		//zNear = newZNear;
 	}
-	void setAntiAlias(double newAntiAlias)
+	void setAntiAlias(int newAntiAlias)
 	{
 		antiAlias = newAntiAlias;
 	}

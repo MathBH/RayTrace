@@ -1,5 +1,6 @@
 #pragma once
 #include <forward_list>
+#include "RayCam.h"
 #include "TraceableObject.h"
 
 /*
@@ -18,7 +19,10 @@ private:
 		Objects() {}
 		~Objects() {}
 	};
+
+
 public:
+	RayCam camera;	//TODO: refactor
 	Objects objects;
 	Scene() {}
 };

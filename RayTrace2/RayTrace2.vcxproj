@@ -240,10 +240,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="SphereTraceable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RayCam.h" />
+    <ClInclude Include="RayTracer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SphereTraceable.h" />
     <ClInclude Include="stb_image_write.h" />
