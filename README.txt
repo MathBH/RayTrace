@@ -27,5 +27,14 @@ Tesla Belzile-Ha													19/03/2018
 					scene geometry, and performing vector
 					and matrix operations.
 					
+			* DevIL - Developer's Image Library
 
----------------------------------------------------------------------------------------------------------------------------------
+				By: Denton Woods, Abysmal Software
+
+					An open source image library capable
+					of writing and displaying a large
+					variety of images.
+
+					Primarily used for saving render output.
+
+----------------------------------------------------------------------------------

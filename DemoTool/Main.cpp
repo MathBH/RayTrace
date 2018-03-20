@@ -3,10 +3,16 @@
 #include <iostream>
 #include "Scene.h"
 #include "SphereTraceable.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <IL/ilut.h>
 
 // TODO: find a library to include for visual output and that can go get image data somewhere in memory and do wtv with it
 
 int main(void) {
+	ILuint ImgId = 0;
+	ilGenImages(1, &ImgId);
+	ilBindImage(ImgId);
 	SphereTraceable s = SphereTraceable();
 	std::cout << "Demo Tool\n";
 
