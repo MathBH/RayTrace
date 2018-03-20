@@ -20,8 +20,6 @@ private:
 		~Objects() {}
 	};
 
-	//TODO add environment variables (like atmosphere values)
-
 
 public:
 	RayCam camera;	//TODO: refactor
