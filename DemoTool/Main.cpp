@@ -4,9 +4,13 @@
 #include "Scene.h"
 #include "SphereTraceable.h"
 
-// TODO: find a library to include for visual output and that can go get image data somewhere in memory and do wtv with it
+#define USE_GIL // Tells the OutputAdapters.h file to declare the GILAdapter class
+#include "OutputAdapters.h"
 
 int main(void) {
+
+	GILAdapter adapter = GILAdapter();
+
 	SphereTraceable s = SphereTraceable();
 	std::cout << "Demo Tool\n";
 

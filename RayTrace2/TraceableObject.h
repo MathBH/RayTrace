@@ -43,13 +43,13 @@ private:
 public:
 
 	RayCollisionResult() : collided(false), collisionPoint(CollisionPoint()){}
-	RayCollisionResult(bool col, CollisionPoint colPoint) : collided(col), collisionPoint(colPoint){}
+	RayCollisionResult(bool col, const CollisionPoint& colPoint) : collided(col), collisionPoint(colPoint){}
 
 	void setCollided(bool col)
 	{
 		collided = col;
 	}
-	void setCollisionPoint(CollisionPoint colPoint) {
+	void setCollisionPoint(const CollisionPoint& colPoint) {
 		collisionPoint = colPoint;
 	}
 	bool getCollided()

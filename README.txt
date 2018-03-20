@@ -13,9 +13,9 @@ Tesla Belzile-Ha													19/03/2018
 	Ray Tracing Algorithm C++ Implementation
 	----------------------------------------
 
-	Contributing Libraries:
+	Library Dependencies:
 
-			* GMTL - Generic Math Template Library
+			* GMTL - Generic Math Template Library (http://ggt.sourceforge.net/)
 
 				By: Allen Bierbaum, Kevin Meinert, Ben Scott
 
@@ -27,5 +27,14 @@ Tesla Belzile-Ha													19/03/2018
 					scene geometry, and performing vector
 					and matrix operations.
 					
+			* Adobe GIL - Adobe Generic Image Library (http://stlab.adobe.com/gil/)
+
+				By: Adobe
+
+					Image manipulation library by Adobe.
+
+					Used for representing image data and
+					saving rendered images.
+
 
 ---------------------------------------------------------------------------------------------------------------------------------
