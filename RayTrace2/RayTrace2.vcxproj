@@ -250,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="RayCam.h" />
     <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="RTOutput.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SphereTraceable.h" />
     <ClInclude Include="stb_image_write.h" />
