@@ -3,16 +3,24 @@
 #include <iostream>
 #include "Scene.h"
 #include "SphereTraceable.h"
-#include <IL/il.h>
-#include <IL/ilu.h>
-#include <IL/ilut.h>
+#include "RTODevIL.h"
 
 // TODO: find a library to include for visual output and that can go get image data somewhere in memory and do wtv with it
 
 int main(void) {
-	ILuint ImgId = 0;
-	ilGenImages(1, &ImgId);
-	ilBindImage(ImgId);
+	RTODevIL output = RTODevIL();
+	for (int y = 0; y < 200; y++) {
+		for (int x = 0; x < 200; x++) {
+			output.setPixel(x, y, ColorRGB(0.5, 0.2, 0.5));
+		}
+	}
+
+	for (int y = 200; y < 250; y++) {
+		for (int x = 150; x < 200; x++) {
+			output.setPixel(x, y, ColorRGB(1., 0.2, 0.7));
+		}
+	}
+	std::cout << output.writeToFile("butt19.png");
 	SphereTraceable s = SphereTraceable();
 	std::cout << "Demo Tool\n";
 

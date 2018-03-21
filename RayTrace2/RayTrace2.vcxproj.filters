@@ -44,5 +44,8 @@
     <ClInclude Include="RTOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColorRGB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

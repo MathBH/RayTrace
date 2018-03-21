@@ -138,6 +138,9 @@
   <ItemGroup>
     <ClInclude Include="RTODevIL.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="octo.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
