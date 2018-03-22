@@ -1,6 +1,6 @@
 #pragma once
-#include "ColorRGB.h"
 #include <string>
+#include "ParameterTypes.h"
 /*
 	Ray Trace Output
 
@@ -11,19 +11,26 @@ using namespace std;
 
 class RTOutput {
 public:
-	
-	/*
-		Reset output with given dimensions
-	*/
-	virtual void reset(int width, int height) = 0;
 
 	/*
-		Set pixel color at x , y
+		Initialize output of specified width and height
+		return 0 on success, negative values on failure
 	*/
-	virtual int setPixel(int x, int y, ColorRGB color) = 0;
+	virtual int initialize(int width, int height) = 0;
+	///*
+	//	Get output dimensions
+	//*/
+	//virtual Dimensions2D getDimensions() = 0;
+
+	/*
+		Set ColorRGB data at x , y
+		return 0 on success, negative values on failure
+	*/
+	virtual int setValueAt(int x, int y, ColorRGB color) = 0;
 	
 	/*
-		Write data to filePath
+		Commit data in buffer
+		return 0 on success, negative values on failures
 	*/
-	virtual int writeToFile(string filePath) = 0;
+	virtual int commit() = 0;
 };

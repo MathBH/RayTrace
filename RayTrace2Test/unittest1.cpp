@@ -17,7 +17,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 // DEBUG WRAPPERS //----------------------------------------------------------------------------------------
 // Wraper class for accessing RayIterator protected data
-	class TestRIT : RayIterator
+	class TestRIT : public RayIterator
 	{
 	public:
 		TestRIT() : RayIterator(DEFAULT_CAM_POS, ProjectionPlane(), ResolutionSettings(), DEFAULT_ANTIALIAS) {}
@@ -253,6 +253,63 @@ namespace RayIteratorTestSpace
 			Assert::IsTrue(rs.width == DEFAULT_RESOLUTION_WIDTH);
 		}
 
+		TEST_METHOD(RayPacketForLoop) {
+			RayPacket packet1 = RayPacket();
+			int counter = 0;
+			for (Rayd ray : packet1) { counter++; Logger::WriteMessage("packet1"); }
+			std::wstringstream sstream = std::wstringstream();
+			sstream << "\ncounter1: " << counter << '\n';
+			std::wstring fail_message1 = sstream.str();
+			Assert::IsTrue(counter == 0, fail_message1.c_str());
+
+			RayPacket packet2 = RayPacket();
+			counter = 0;
+			packet2.add(Rayd());
+			for (Rayd ray : packet2) { counter++; Logger::WriteMessage("packet2"); }
+			sstream << "counter2: " << counter << '\n';
+			std::wstring fail_message2 = sstream.str();
+			Assert::IsTrue(counter == 1, fail_message2.c_str());
+
+			RayPacket packet3 = RayPacket();
+			counter = 0;
+			for (int i = 0; i < 40; i++) { packet3.add(Rayd()); Logger::WriteMessage("packet3"); }
+			for (Rayd ray : packet3) { counter++; }
+			sstream << "counter3: " << counter << '\n';
+			std::wstring fail_message3 = sstream.str();
+			Assert::IsTrue(counter == 40, fail_message3.c_str());
+		}
+
+		TEST_METHOD(RayPacketContents) {
+			Rayd r0 = Rayd(gmtl::Point3d(6., 9., 0.323), gmtl::Vec3d(1, 0, 0));
+			Rayd r1 = Rayd(gmtl::Point3d(1.4, 32., 0.11), gmtl::Vec3d(0.5, 0.5, 0));
+			Rayd r2 = Rayd(gmtl::Point3d(7.8, 1.54, 323.1), gmtl::Vec3d(0.5, 0, 0.5));
+			Rayd r3 = Rayd(gmtl::Point3d(0.12, 4.12, 3.4), gmtl::Vec3d(0, 1, 0));
+			Rayd r4 = Rayd(gmtl::Point3d(2., 9., 0.1), gmtl::Vec3d(0, 0.5, 0.5));
+			Rayd r5 = Rayd(gmtl::Point3d(.32, 9.1, 12.1), gmtl::Vec3d(0, 0, 1));
+			Rayd rays[] = { r0,r1,r2,r3,r4,r5 };
+
+			RayPacket packet = RayPacket();
+
+			packet.add(r0);
+			packet.add(r1);
+			packet.add(r2);
+			packet.add(r3);
+			packet.add(r4);
+			packet.add(r5);
+
+			int i = 0;
+			for (Rayd ray : packet) {
+				Rayd rayExpected = rays[i];
+				Assert::IsTrue(ray.getOrigin() == rayExpected.getOrigin());
+				Assert::IsTrue(ray.getDir() == rayExpected.getDir());
+				i++;
+			}
+		}
+
+		TEST_METHOD(GetRayPacketForPixel) {
+			Assert::Fail(L"UNIMPLEMENTED");
+		}
+
 		TEST_METHOD(ProjectionPlaneConstructorDefault) {
 			ProjectionPlane ppDefault = ProjectionPlane();
 			projectionPlaneValidationTests(ppDefault, DEFAULT_FOV, DEFAULT_D_NEAR, DEFAULT_ASPECT_RATIO);
@@ -434,7 +491,7 @@ namespace RayIteratorTestSpace
 }
 namespace DataSpitters
 {
-	TEST_CLASS(Data)
+	TEST_CLASS(DataSpitters)
 	{
 		TEST_METHOD(RayIteratorData) {
 			std::ofstream outputFile;
@@ -453,6 +510,24 @@ namespace DataSpitters
 				}
 			}
 			outputFile.close();
+		}
+
+		TEST_METHOD(RayIteratorPacketsData) {
+			std::ofstream outputFile;
+			outputFile.open("RayItPacketsData.txt");
+			TestRIT iter = TestRIT();
+			for (int y = 0; y < DEFAULT_RESOLUTION_HEIGHT; y++) {
+				for (int x = 0; x < DEFAULT_RESOLUTION_WIDTH; x++) {
+					RayPacket packet = iter.getAt(x, y);
+					for (Rayd ray : packet) {
+						gmtl::Point3d orig = ray.getOrigin();
+						gmtl::Vec3d dir = ray.getDir();
+						outputFile << "[" /*<< " <" << orig[0] << ", " << orig[1] << ", " << orig[2] << ">: "*/ <<
+							dir[0] << ", " << dir[1] << ", " << dir[2] << "] ";
+					}
+				}
+				outputFile << '\n';
+			}
 		}
 	};
 }

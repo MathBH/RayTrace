@@ -44,7 +44,10 @@
     <ClInclude Include="RTOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ColorRGB.h">
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

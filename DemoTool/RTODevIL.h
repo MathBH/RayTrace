@@ -19,42 +19,42 @@
 
 using namespace std;
 
-class RTODevIL : RTOutput
+class RTODevIL : public RTOutput
 {
 private:
 	int Width;
 	int Height;
+	string filePath;
 	ILuint ImageId;
-	vector<unsigned char> imageData;
+	bool initialized;
+	bool filePathValid;
 
-	/*
-		Common initialization calls between constructors
-	*/
-	void init();
+	vector<unsigned char> imageData;
 public:
-	RTODevIL() : Width(DEFAULT_OUTPUT_WIDTH), Height(DEFAULT_OUTPUT_HEIGHT)
-	{
-		init();
-	}
-	RTODevIL(int width, int height) : Width(width), Height(height)
-	{
-		init();
-	}
+	RTODevIL() : initialized(false), filePathValid(false){}
 	~RTODevIL() {}
 
 	/*
-		Reset output with given dimensions
+		Set output image file path
+		return 0 on success, negative values on failure
 	*/
-	virtual void reset(int width, int height) override;
+	int setFilePath(string path);
+	/*
+		Initialize output of specified width and height
+		return 0 on success, negative values on failure
+	*/
+	int initialize(int width, int height) override;
 
 	/*
-		Set the color of the pixel at (x,y) to ColorRGB color
+		Set ColorRGB data at x , y
+		return 0 on success, negative values on failure
 	*/
-	int setPixel(int x, int y, ColorRGB color) override;
+	int setValueAt(int x, int y, ColorRGB color) override;
 
 	/*
+		Commit data in buffer
 		Write the data in the buffer to filePath
+		return 0 on success, negative values on failures
 	*/
-	int writeToFile(string filePath) override;
+	int commit() override;
 };
-

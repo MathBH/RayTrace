@@ -248,7 +248,8 @@
     <ClCompile Include="SphereTraceable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ColorRGB.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ParameterTypes.h" />
     <ClInclude Include="RayCam.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RTOutput.h" />
