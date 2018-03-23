@@ -39,14 +39,22 @@ public:
 		B = B/value;
 		return *this;
 	}
+
+	ColorRGB& operator*(double value) {
+		//R = R * value;
+		//G = G * value;
+		//B = B * value
+		ColorRGB color(R * value, G * value, B * value);
+		return color;
+	}
 	//TODO: + operator
 	//		check if vector of these will initialize them all at 0 or if u need to do that urself
 };
 
 class Dimensions2D {
 public:
-	int X;
-	int Y;
+	double X;
+	double Y;
 
 	Dimensions2D() : X(DEFAULT_RESOLUTION_WIDTH), Y(DEFAULT_RESOLUTION_HEIGHT) {}
 	Dimensions2D(int x, int y) : X(x), Y(y) {}
@@ -54,8 +62,8 @@ public:
 
 class ResolutionSettings {
 public:
-	int width;
-	int height;
+	double width;
+	double height;
 
 	ResolutionSettings() : width(DEFAULT_RESOLUTION_WIDTH), height(DEFAULT_RESOLUTION_HEIGHT) {}
 	ResolutionSettings(int w, int h) : width(w), height(h) {}

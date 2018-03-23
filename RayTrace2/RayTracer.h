@@ -37,6 +37,7 @@ private:
 	RTOutput* renderOutput;
 	Scene* scene;
 	RTSettings renderSettings;
+	ColorRGB ambientColor;
 
 	bool sceneSet;
 	bool outputSet;
@@ -45,9 +46,15 @@ private:
 	//Helper function - TODO: refactor
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
 
+	ColorRGB trace(Scene * scene, Rayd ray);
+
 public:
 	RayTracer() : sceneSet(false), outputSet(false) {}
 	~RayTracer() {}
+
+	void setAmbientColor(ColorRGB color) {
+		ambientColor = color;
+	}
 
 	/*
 	Set render settings

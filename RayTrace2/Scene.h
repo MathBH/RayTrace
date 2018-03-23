@@ -2,6 +2,7 @@
 #include <forward_list>
 #include "Camera.h"
 #include "TraceableObject.h"
+#include "RTLight.h"
 
 /*
 	Class: Scene
@@ -20,9 +21,9 @@ private:
 		~Objects() {}
 	};
 
-
 public:
 	Camera camera;
 	Objects objects;
+	std::forward_list<RTLight*> rayTraceLights;
 	Scene() {}
 };

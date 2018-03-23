@@ -21,7 +21,7 @@
 #define DEFAULT_ANTIALIAS 16
 #endif
 #ifndef DEFAULT_ASPECT_RATIO
-#define DEFAULT_ASPECT_RATIO 1.33
+#define DEFAULT_ASPECT_RATIO DEFAULT_RESOLUTION_WIDTH/DEFAULT_RESOLUTION_HEIGHT
 #endif
 #ifndef DEFAULT_CAM_POS
 #define DEFAULT_CAM_POS gmtl::Point3d(0.0,0.0,0.0)
@@ -47,8 +47,8 @@ public:
 		z = -d;
 		width = abs(z * tan(fov)) * 2;
 		height = width / aspectRatio;
-		x0 = -(width / 2);
-		y0 = -(height / 2);
+		x0 = -(width / 2.0);
+		y0 = -(height / 2.0);
 	}
 };
 
@@ -113,6 +113,9 @@ public:
 		int yCursor = y* AntiAlias;
 		//TODO: add guards for out of bounds x and y values
 
+		//gmtl::Point3d pointOnPlane = getPointOnPlane(xCursor, yCursor); // get point on the plane,
+		//std::cout << "\nprojection: [" << pointOnPlane[0] << " , " << pointOnPlane[1] << " , " << pointOnPlane[2] << "]";
+		
 		for (int yDelta = 0; yDelta < AntiAlias; yDelta++) {
 			for (int xDelta = 0; xDelta < AntiAlias; xDelta++) {
 				gmtl::Rayd ray = gmtl::Rayd();

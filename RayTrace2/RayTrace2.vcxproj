@@ -245,6 +245,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="RTLight.cpp" />
     <ClCompile Include="SphereTraceable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +253,7 @@
     <ClInclude Include="ParameterTypes.h" />
     <ClInclude Include="RayCam.h" />
     <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="RTLight.h" />
     <ClInclude Include="RTOutput.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SphereTraceable.h" />
