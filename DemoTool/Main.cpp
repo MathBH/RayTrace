@@ -25,18 +25,18 @@ int main(void) {
 	std::cout << "Demo Tool\n";
 
 	RTODevIL output = RTODevIL();
-	output.setFilePath("render1.png");
+	output.setFilePath("render2.png");
 
 	Scene scene = Scene();
 	scene.camera = Camera();
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2.);
-	SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5);
-	SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5);
-	SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0);
-	SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0);
-	SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5);
-	SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5);
-	SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8.);
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,0.4,0.0),0.5));
+	SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0, 1.0, 0.7), 0.5));
+	SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0,1.0,0.0),0.5));
+	SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7),0.5));
+	SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0),0.5));
+	SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 0.5));
+	SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 0.5));
+	SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 0.5));
 	scene.objects.traceable.push_front(&sphere1);
 	scene.objects.traceable.push_front(&sphere2);
 	scene.objects.traceable.push_front(&sphere3);

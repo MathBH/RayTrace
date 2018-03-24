@@ -14,7 +14,7 @@ RayCollisionResult SphereTraceable::tryCollision(gmtl::Rayd ray)
 		gmtl::Point3d colPos = ray.getOrigin() + ray.getDir() * t;
 		gmtl::Vec3d normal = colPos - sphereData.getCenter();
 		normal = gmtl::makeNormal(normal);
-		CollisionPoint collisionPoint = CollisionPoint(colPos, normal);
+		CollisionPoint collisionPoint = CollisionPoint(colPos, normal, material);
 
 		result.setCollided(true);
 		result.setCollisionPoint(collisionPoint);

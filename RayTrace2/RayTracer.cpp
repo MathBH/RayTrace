@@ -2,8 +2,10 @@
 #include "RayCam.h"
 #include <vector>
 #include <cmath>
-using namespace gmtl;
+#include <stdio.h>
+//#include <boost/math/distributions/normal.hpp>
 
+using namespace gmtl;
 /*
 Set target output
 return:
@@ -37,11 +39,55 @@ ColorRGB RayTracer::trace(Scene * scene, Rayd ray) {
 	bool foundCollision = false; //TODO: refactor
 	CollisionPoint closestCollision;
 	Point3d cameraPosition = scene->camera.position;
+
 	for (TraceableObject * object : scene->objects.traceable)
 	{
 		RayCollisionResult result = object->tryCollision(ray);
 		if (result.getCollided())
 		{
+			//TODO: add parameter int life -	also first try collision with lights and then compare if closest object is closer than closest light
+			//									if it hits a light, return the light's diffuse color
+			//
+			//		get material value for reflectivity
+			//		get lights in line of sight
+			//		calculate val = dot(normalize(lightPos - colPos), f_normal)*matColor*(1-reflectivity)
+			//
+			//		if life == 0
+			//			return val
+			//
+			//		get reflectedray
+			//		I - 2 * dotProduct(I, N) * N;
+			//
+			//		return val + reflectivity*trace(reflectedray, scene, life-1)
+			//
+			//		shading(light)
+			//			take angle between normal and incidence of light
+			//			use that thing from class and yeah return modified material color
+
+			//		refraction:
+			//
+			//		get refraction index for material
+			//		calculate the new refractedray
+			//
+			//		get transparency
+			//		multiply the last value^ by (1-transparency)
+			//		return that^ + transparency*trace(refractedray,scene)
+			//
+			//
+			//		refractedray
+			//		todo:
+			//
+			//
+			//
+			//		
+			//		Beer’s Law https://blog.demofox.org/2017/01/09/raytracing-reflection-refraction-fresnel-total-internal-reflection-and-beers-law/
+			//		
+			//		vec3 color = RayTrace(rayPos, rayDir);
+			//		vec3 absorb = exp(-OBJECT_ABSORB * absorbDistance);
+			//		color *= absorb;
+			//		OBJECT_ABSORB is an RGB value that describes how much of each color channel absorbs over distance.For example, a value of(8.0, 2.0, 0.1) would make red get absorbed the fastest, then green, then blue, so would result in a blueish, slightly green color object.
+
+
 			CollisionPoint collisionPoint = result.getCollisionPoint();
 			if (!foundCollision)
 			{
@@ -71,7 +117,7 @@ ColorRGB RayTracer::trace(Scene * scene, Rayd ray) {
 		double colorValue = 1. - (distanceToPoint / DOF);
 		//std::cout << "\ndistance " << distanceToPoint
 		//	<< "\ncolor " << colorValue;
-		return ambientColor * colorValue;
+		return closestCollision.getMaterial().getColor() * colorValue;
 	}
 	//TODO: implement
 	//Vec3d dir = ray.getDir();
@@ -81,6 +127,7 @@ ColorRGB RayTracer::trace(Scene * scene, Rayd ray) {
 
 int RayTracer::render() //TODO add filepath to render to
 {
+
 	if (!outputSet) {
 		return -1;
 	}

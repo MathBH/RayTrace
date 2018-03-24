@@ -17,10 +17,12 @@ class SphereTraceable : public TraceableObject
 {
 protected:
 	gmtl::Sphered sphereData;
+	RTMaterial material;
 
 public:
 	SphereTraceable() : SphereTraceable(DEFAULT_SPHERE_POS, DEFAULT_SPHERE_RADIUS) {}
 	SphereTraceable(gmtl::Point3d p, double r) : sphereData(gmtl::Sphered(p, r)) {}
+	SphereTraceable(gmtl::Point3d p, double r, RTMaterial mat) : sphereData(gmtl::Sphered(p, r)), material(mat) {}
 	~SphereTraceable() {}
 
 	double getRadius() { return sphereData.getRadius(); }
@@ -28,6 +30,7 @@ public:
 
 	void setRadius(double r) { sphereData.setRadius(r); }
 	void setPosition(gmtl::Point3d p) { sphereData.setCenter(p); }
+	void setMaterial(RTMaterial mat) { material = mat; }
 
 	RayCollisionResult tryCollision(const gmtl::Rayd ray) override;
 };

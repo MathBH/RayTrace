@@ -128,7 +128,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>J:\usr\local\include;$(IncludePath)</IncludePath>
+    <IncludePath>J:\Users\Jen\Documents\GitHub\gcem\include;J:\Users\Jen\Documents\GitHub\stats\include;J:\usr\local\include;$(IncludePath)</IncludePath>
     <TargetExt>.lib</TargetExt>
     <LibraryPath>J:\usr\local\lib\x86\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -250,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="ParameterTypes.h" />
     <ClInclude Include="RayCam.h" />
     <ClInclude Include="RayTracer.h" />
@@ -261,6 +262,5 @@
     <ClInclude Include="TraceableObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

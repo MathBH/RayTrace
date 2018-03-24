@@ -11,6 +11,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DemoTool", "DemoTool\DemoTo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7ECCEBF-CAB3-4F07-BE36-33D3C01F3F77}"
 	ProjectSection(SolutionItems) = preProject
+		DevIL-LICENSE = DevIL-LICENSE
+		GMTL-AUTHORS = GMTL-AUTHORS
+		GMTL-COPYING = GMTL-COPYING
+		GMTL-LICENSE = GMTL-LICENSE
+		GMTL-LICENSE.addendum = GMTL-LICENSE.addendum
+		LICENSE_1_0.txt = LICENSE_1_0.txt
 		README.txt = README.txt
 	EndProjectSection
 EndProject
