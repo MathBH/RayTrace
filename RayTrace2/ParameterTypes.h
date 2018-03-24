@@ -1,10 +1,10 @@
 #pragma once
 #define ZERO_VAL 0.0
 #ifndef DEFAULT_RESOLUTION_WIDTH
-#define DEFAULT_RESOLUTION_WIDTH 40
+#define DEFAULT_RESOLUTION_WIDTH 640
 #endif
 #ifndef DEFAULT_RESOLUTION_HEIGHT
-#define DEFAULT_RESOLUTION_HEIGHT 40
+#define DEFAULT_RESOLUTION_HEIGHT 480
 #endif
 
 class ColorRGB {
@@ -41,11 +41,11 @@ public:
 	}
 
 	ColorRGB& operator*(double value) {
-		//R = R * value;
-		//G = G * value;
-		//B = B * value
-		ColorRGB color(R * value, G * value, B * value);
-		return color;
+		R = R * value;
+		G = G * value;
+		B = B * value;
+		//ColorRGB color(R * value, G * value, B * value);
+		return *this;
 	}
 	//TODO: + operator
 	//		check if vector of these will initialize them all at 0 or if u need to do that urself

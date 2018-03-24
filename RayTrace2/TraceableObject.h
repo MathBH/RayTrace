@@ -49,8 +49,9 @@ private:
 	CollisionPoint collisionPoint;
 public:
 
-	RayCollisionResult() : collided(false), collisionPoint(CollisionPoint()){}
+	RayCollisionResult() : collided(false), collisionPoint(CollisionPoint()) {}
 	RayCollisionResult(bool col, CollisionPoint colPoint) : collided(col), collisionPoint(colPoint){}
+	RayCollisionResult(bool col) : collided(col), collisionPoint(CollisionPoint()) {}
 
 	void setCollided(bool col)
 	{

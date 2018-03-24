@@ -19,7 +19,7 @@ int RayTracer::setOutput(RTOutput * rndrOut)
 	return 0;
 }
 
-int RayTracer::setScene(Scene * scn)
+int RayTracer::setScene(RTScene * scn)
 {
 	scene = scn;
 	sceneSet = true; //TODO: check for validity
@@ -35,16 +35,7 @@ void RayTracer::insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex) {
 
 //Debug purpose only value
 #define DOF 16.
-ColorRGB RayTracer::trace(Scene * scene, Rayd ray) {
-	bool foundCollision = false; //TODO: refactor
-	CollisionPoint closestCollision;
-	Point3d cameraPosition = scene->camera.position;
-
-	for (TraceableObject * object : scene->objects.traceable)
-	{
-		RayCollisionResult result = object->tryCollision(ray);
-		if (result.getCollided())
-		{
+ColorRGB RayTracer::trace(RTScene * scene, Rayd ray)
 			//TODO: add parameter int life -	also first try collision with lights and then compare if closest object is closer than closest light
 			//									if it hits a light, return the light's diffuse color
 			//
@@ -86,43 +77,19 @@ ColorRGB RayTracer::trace(Scene * scene, Rayd ray) {
 			//		vec3 absorb = exp(-OBJECT_ABSORB * absorbDistance);
 			//		color *= absorb;
 			//		OBJECT_ABSORB is an RGB value that describes how much of each color channel absorbs over distance.For example, a value of(8.0, 2.0, 0.1) would make red get absorbed the fastest, then green, then blue, so would result in a blueish, slightly green color object.
+{
 
-
-			CollisionPoint collisionPoint = result.getCollisionPoint();
-			if (!foundCollision)
-			{
-				closestCollision = collisionPoint;
-				foundCollision = true;
-			}
-			else
-			{
-				Vec3d colToCamera = collisionPoint.getPosition() - cameraPosition;
-				Vec3d closestColToCamera = closestCollision.getPosition() - cameraPosition;
-				if (gmtl::length(colToCamera) < gmtl::length(closestColToCamera))
-				{
-					closestCollision = collisionPoint;
-				}
-			}
-		}
-	}
-
-	if (!foundCollision)
+	ColorRGB colorOut = ColorRGB();
+	RayCollisionResult collisionResult = scene->tryCollision(ray);
+	if (collisionResult.getCollided())
 	{
-		return ColorRGB();
-	}
-	else
-	{
-		Vec3d colToCamera = closestCollision.getPosition() - cameraPosition;
-		double distanceToPoint = gmtl::length(colToCamera);
+		CollisionPoint collisionPoint = collisionResult.getCollisionPoint();
+		Vec3d colToRay = collisionPoint.getPosition() - ray.getOrigin();
+		double distanceToPoint = gmtl::length(colToRay);
 		double colorValue = 1. - (distanceToPoint / DOF);
-		//std::cout << "\ndistance " << distanceToPoint
-		//	<< "\ncolor " << colorValue;
-		return closestCollision.getMaterial().getColor() * colorValue;
+		colorOut = collisionPoint.getMaterial().getColor() * colorValue;
 	}
-	//TODO: implement
-	//Vec3d dir = ray.getDir();
-	//ColorRGB color(abs(dir[0]), abs(dir[1]), abs(dir[2]));
-	//return color;
+	return colorOut;
 }
 
 int RayTracer::render() //TODO add filepath to render to

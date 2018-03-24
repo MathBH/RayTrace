@@ -35,7 +35,7 @@ class RayTracer
 {
 private:
 	RTOutput* renderOutput;
-	Scene* scene;
+	RTScene* scene;
 	RTSettings renderSettings;
 	ColorRGB ambientColor;
 
@@ -46,7 +46,7 @@ private:
 	//Helper function - TODO: refactor
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
 
-	ColorRGB trace(Scene * scene, Rayd ray);
+	ColorRGB trace(RTScene * scene, Rayd ray);
 
 public:
 	RayTracer() : sceneSet(false), outputSet(false) {}
@@ -82,7 +82,7 @@ public:
 		>=0 on success
 		negative values for invalid scene
 	*/
-	int setScene(Scene * scn);
+	int setScene(RTScene * scn);
 
 	/*
 	Run render
