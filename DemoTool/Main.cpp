@@ -5,10 +5,12 @@
 #include "SphereTraceable.h"
 #include "RTODevIL.h"
 #include "RayTracer.h"
+#include "DevILImage.h"
+#include <SkyMap.h>
 
 // TODO: find a library to include for visual output and that can go get image data somewhere in memory and do wtv with it
 
-int main(void) {
+int main(int argc, char** argv) {
 	//for (int y = 0; y < 200; y++) {
 	//	for (int x = 0; x < 200; x++) {
 	//		output.setPixel(x, y, ColorRGB(0.5, 0.2, 0.5));
@@ -24,12 +26,22 @@ int main(void) {
 	//SphereTraceable s = SphereTraceable();
 	std::cout << "Demo Tool\n";
 
+	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("render3.png");
+	output.setFilePath("renderMirror2.png");
+
+	// Setup Scene
+	DevILImage skyMapData = DevILImage("skymaps/AboveTheSea.jpg");
+	SkyMap skyMap = SkyMap();
+	//skyMap.setForward(gmtl::Vec3d(1., 0., 0.));
+	//skyMap.setRight(gmtl::Vec3d(0., 0., 1.));
+	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
 
 	RTScene scene = RTScene();
 	scene.camera = Camera();
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,0.4,0.0),0.5));
+	scene.camera.position = gmtl::Point3d(0.01,1.0,5.0);
+	scene.Sky = skyMap;
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.0,0.8,0.4),0.5));
 	SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0, 1.0, 0.7), 0.5));
 	SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0,1.0,0.0),0.5));
 	SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7),0.5));
@@ -46,12 +58,12 @@ int main(void) {
 	scene.objects.push_front(&sphere7);
 	scene.objects.push_front(&sphere8);
 
-	RTLight light1 = RTLight(Point3d(1.0,1.0,4.0));
-	scene.lights.push_front(&light1);
+	//RTLight light1 = RTLight(Point3d(1.0,1.0,4.0));
+	//scene.lights.push_front(&light1);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 1;
-	renderSettings.resolution = ResolutionSettings(320,240);
+	renderSettings.antiAlias = 16;
+	renderSettings.resolution = ResolutionSettings(850,480);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;
 	RayTracer rayTracer = RayTracer();

@@ -104,7 +104,7 @@ protected:
 	}
 
 public:
-	friend class RayCam;
+	friend class RayCam;	//TODO: rotate rays so they are aligned with cam direction
 	~RayIterator() {}
 
 	RayPacket getAt(int x, int y) {

@@ -1,4 +1,5 @@
 #include "RTODevIL.h"
+#include <iostream>
 #define COLOR_FULL_SCALE ((unsigned char) 0xFF)
 
 /*
@@ -15,6 +16,11 @@ int RTODevIL::initialize(int width, int height)
 		return -1;
 	}
 	imageData = vector<unsigned char>(width*height*BPP);
+	ilInit();
+	iluInit();
+	ImageId = 0;
+	ilGenImages(1, &ImageId);
+	ilBindImage(ImageId);
 	initialized = true;
 	return 0;
 }
@@ -43,6 +49,7 @@ int RTODevIL::setValueAt(int x, int y, ColorRGB color)
 {
 	if (!initialized) {
 		return -1;
+
 	}
 	if (x < Width && y < Height) {
 		int i = y * Width*BPP + x*BPP;
@@ -76,20 +83,19 @@ int RTODevIL::commit()
 
 	unsigned char * imageData_c = &imageData[0];
 
-	ilInit();
-	iluInit();
-	ilutRenderer(ILUT_OPENGL);
-	ImageId = 0;
-	ilGenImages(1, &ImageId);
-	ilBindImage(ImageId);
 	if (!ilTexImage(Width, Height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, imageData_c)) {
 		return -3;
 	}
+
 	ilEnable(IL_FILE_OVERWRITE);
 	if (!ilSave(IL_PNG, filePath.c_str())) {
 		return -4;
 	}
+
+	GLuint openglID = ilutGLBindTexImage();
+
 	ilBindImage(0);
+	//glDeleteTextures(1, &openglID);
 	ilDeleteImage(ImageId);
 	return 0;
 }

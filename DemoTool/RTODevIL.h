@@ -4,6 +4,7 @@
 #include <IL/ilu.h>
 #include <IL/ilut.h>
 #include <vector>
+#include "DevILGLWindow.h"
 #define DEFAULT_OUTPUT_WIDTH 640
 #define DEFAULT_OUTPUT_HEIGHT 480
 
@@ -28,10 +29,12 @@ private:
 	ILuint ImageId;
 	bool initialized;
 	bool filePathValid;
+	DevILGLWindow Window;
+	bool windowAssigned;
 
 	vector<unsigned char> imageData;
 public:
-	RTODevIL() : initialized(false), filePathValid(false){}
+	RTODevIL() : initialized(false), filePathValid(false), windowAssigned(false){}
 	~RTODevIL() {}
 
 	/*

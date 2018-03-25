@@ -73,7 +73,8 @@
     <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace\RayTrace2;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
+    <IncludePath>J:\Users\Jen\Documents\OpenGL\Include;J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace\RayTrace2;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
+    <LibraryPath>J:\Users\Jen\Documents\OpenGL\Libraries;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -132,10 +133,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DevILGLWindow.cpp" />
+    <ClCompile Include="DevILImage.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RTODevIL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DevILGLWindow.h" />
+    <ClInclude Include="DevILImage.h" />
     <ClInclude Include="RTODevIL.h" />
   </ItemGroup>
   <ItemGroup>

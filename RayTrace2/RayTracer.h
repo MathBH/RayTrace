@@ -46,7 +46,7 @@ private:
 	//Helper function - TODO: refactor
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
 
-	ColorRGB trace(RTScene * scene, Rayd ray);
+	ColorRGB trace(RTScene * scene, Rayd ray, int life);
 
 public:
 	RayTracer() : sceneSet(false), outputSet(false) {}

@@ -33,9 +33,21 @@ void RayTracer::insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex) {
 	}
 }
 
+Rayd reflect(Rayd ray, CollisionPoint colPoint) {
+	Vec3d incidenceVec = ray.getDir();
+	Vec3d normalVec = colPoint.getNormal();
+
+	Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
+	newRayDir = makeNormal(newRayDir);
+
+	Rayd newRay = Rayd(colPoint.getPosition(), newRayDir);
+	return newRay;
+}
+
 //Debug purpose only value
 #define DOF 16.
-ColorRGB RayTracer::trace(RTScene * scene, Rayd ray)
+#define RAY_LIFE 12
+ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
 			//TODO: add parameter int life -	also first try collision with lights and then compare if closest object is closer than closest light
 			//									if it hits a light, return the light's diffuse color
 			//
@@ -78,18 +90,25 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray)
 			//		color *= absorb;
 			//		OBJECT_ABSORB is an RGB value that describes how much of each color channel absorbs over distance.For example, a value of(8.0, 2.0, 0.1) would make red get absorbed the fastest, then green, then blue, so would result in a blueish, slightly green color object.
 {
+	if (life <= 0) {
+		return scene->Sky.hitSkyMap(ray);
+	}
 
-	ColorRGB colorOut = ColorRGB();
 	RayCollisionResult collisionResult = scene->tryCollision(ray);
 	if (collisionResult.getCollided())
 	{
 		CollisionPoint collisionPoint = collisionResult.getCollisionPoint();
-		Vec3d colToRay = collisionPoint.getPosition() - ray.getOrigin();
-		double distanceToPoint = gmtl::length(colToRay);
-		double colorValue = 1. - (distanceToPoint / DOF);
-		colorOut = collisionPoint.getMaterial().getColor() * colorValue;
+		//Vec3d colToRay = collisionPoint.getPosition() - ray.getOrigin();
+		//double distanceToPoint = gmtl::length(colToRay);
+		//double colorValue = 1. - (distanceToPoint / DOF);
+		Rayd reflectedRay = reflect(ray, collisionPoint);
+		//ColorRGB colorOut = collisionPoint.getMaterial().getColor() * colorValue/2.;
+		//colorOut += trace(scene, reflectedRay, life - 1)/2.;
+		return trace(scene, reflectedRay, life - 1);
 	}
-	return colorOut;
+	else {
+		return scene->Sky.hitSkyMap(ray);
+	}
 }
 
 int RayTracer::render() //TODO add filepath to render to
@@ -111,21 +130,22 @@ int RayTracer::render() //TODO add filepath to render to
 	renderOutput->initialize(outputWidth, outputHeight);
 
 	std::cout << "\nRENDERING\n---------";
-	for (int xIndex = 0; xIndex < outputWidth; xIndex++)
+	for (int yIndex = 0; yIndex < outputHeight; yIndex++)
 	{
-		for (int yIndex = 0; yIndex < outputHeight; yIndex++)
+		for (int xIndex = 0; xIndex < outputWidth; xIndex++)
 		{
 			//std::cout << "\nposition: [" << xIndex << " , " << yIndex << "]";
 			RayPacket pixelRays = rayIterator.getAt(xIndex, yIndex);
 			ColorRGB colorOut = ColorRGB(0.0,0.0,0.0);
 			for (Rayd ray : pixelRays) {
-				colorOut += trace(scene, ray);
+				colorOut += trace(scene, ray, RAY_LIFE);
 			}
 			colorOut = colorOut/(pow((double)renderSettings.antiAlias, 2.));
 			//std::cout << "\n[" << colorOut.R << ", " << colorOut.G << ", " << colorOut.B << "]";
 			renderOutput->setValueAt(xIndex, yIndex, colorOut);
 		}
-		std::cout << "\nprogress: " << (xIndex/(double)outputWidth)*100. << "%";
+		renderOutput->commit();
+		std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
 	}
 	return 0;
 }

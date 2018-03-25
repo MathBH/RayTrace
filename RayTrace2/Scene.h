@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "TraceableObject.h"
 #include "RTLight.h"
+#include "SkyMap.h"
 
 /*
 	Class: Scene
@@ -36,6 +37,7 @@ Holds all items found in a ray traceable scene and provides an interface for acc
 class RTScene {
 public:
 	Camera camera;
+	SkyMap Sky;
 	std::forward_list<RTLight*> lights;
 	std::forward_list<TraceableObject*> objects;
 	RTScene() {}
@@ -48,7 +50,6 @@ public:
 	*/
 	RayCollisionResult tryCollision(const gmtl::Rayd ray) //TODO: refactor
 	{
-
 		bool foundCollision = false;
 		RayCollisionResult nearestCollisionResult = RayCollisionResult(false);
 

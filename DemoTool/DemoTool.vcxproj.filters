@@ -21,9 +21,21 @@
     <ClCompile Include="RTODevIL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DevILGLWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DevILImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RTODevIL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DevILGLWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DevILImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
