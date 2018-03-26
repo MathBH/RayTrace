@@ -26,6 +26,13 @@ public:
 		return *this;
 	}
 
+	ColorRGB& operator*=(const ColorRGB& otherColor) {
+		this->R *= otherColor.R;
+		this->G *= otherColor.G;
+		this->B *= otherColor.B;
+		return *this;
+	}
+
 	ColorRGB& operator=(const ColorRGB& otherColor) {
 		R = otherColor.R;
 		G = otherColor.G;
@@ -47,6 +54,22 @@ public:
 		//ColorRGB color(R * value, G * value, B * value);
 		return *this;
 	}
+
+	ColorRGB& operator*(ColorRGB& otherColor) {
+		R = R * otherColor.R;
+		G = G * otherColor.G;
+		B = B * otherColor.B;
+		return *this;
+	}
+
+	/*
+		Clamp values > 1. to 1.
+	*/
+	//void clamp() {
+	//	if (R > 1.) { R = 1.; }
+	//	if (G > 1.) { G = 1.; }
+	//	if (B > 1.) { B = 1.; }
+	//}
 	//TODO: + operator
 	//		check if vector of these will initialize them all at 0 or if u need to do that urself
 };

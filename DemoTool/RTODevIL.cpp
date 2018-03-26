@@ -1,6 +1,9 @@
 #include "RTODevIL.h"
 #include <iostream>
 #define COLOR_FULL_SCALE ((unsigned char) 0xFF)
+#define RED_LUM 0.299
+#define GREEN_LUM 0.587
+#define BLUE_LUM 0.114
 
 /*
 	Initialize output of specified width and height
@@ -53,9 +56,18 @@ int RTODevIL::setValueAt(int x, int y, ColorRGB color)
 	}
 	if (x < Width && y < Height) {
 		int i = y * Width*BPP + x*BPP;
-		imageData[i] = COLOR_FULL_SCALE * color.R;
-		imageData[i+1] = COLOR_FULL_SCALE * color.G;
-		imageData[i+2] = COLOR_FULL_SCALE * color.B;
+
+		//double colMax = 1.;
+		double r = color.R;
+		double g = color.G;
+		double b = color.B;
+		if (r > 1.) { r = 1.; }
+		if (g > 1.) { g = 1.; }
+		if (b > 1.) { b = 1.; }
+
+		imageData[i] = COLOR_FULL_SCALE * r;
+		imageData[i+1] = COLOR_FULL_SCALE * g;
+		imageData[i+2] = COLOR_FULL_SCALE * b;
 		return 0;
 	}
 	return -2;

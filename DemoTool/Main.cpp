@@ -28,42 +28,44 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("renderMirror2.png");
+	output.setFilePath("renderMarble_test2.png");
 
 	// Setup Scene
-	DevILImage skyMapData = DevILImage("skymaps/AboveTheSea.jpg");
+	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
+	DevILImageRGB skyMapLightData = DevILImageRGB("skymaps/AboveTheSea_L.jpg");
 	SkyMap skyMap = SkyMap();
 	//skyMap.setForward(gmtl::Vec3d(1., 0., 0.));
 	//skyMap.setRight(gmtl::Vec3d(0., 0., 1.));
 	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
-
+	skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
+	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
-	scene.camera.position = gmtl::Point3d(0.01,1.0,5.0);
+	scene.camera.position = gmtl::Point3d(0.01,0.5,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.0,0.8,0.4),0.5));
-	SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0, 1.0, 0.7), 0.5));
-	SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.0,1.0,0.0),0.5));
-	SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7),0.5));
-	SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0),0.5));
-	SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 0.5));
-	SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 0.5));
-	SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 0.5));
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.45,0.9,0.7),0.5));
+	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 0.5));
+	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6),0.5));
+	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7),0.5));
+	//SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0),0.5));
+	//SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 0.5));
+	//SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 0.5));
+	//SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 0.5));
 	scene.objects.push_front(&sphere1);
-	scene.objects.push_front(&sphere2);
-	scene.objects.push_front(&sphere3);
-	scene.objects.push_front(&sphere4);
-	scene.objects.push_front(&sphere5);
-	scene.objects.push_front(&sphere6);
-	scene.objects.push_front(&sphere7);
-	scene.objects.push_front(&sphere8);
+	//scene.objects.push_front(&sphere2);
+	//scene.objects.push_front(&sphere3);
+	//scene.objects.push_front(&sphere4);
+	//scene.objects.push_front(&sphere5);
+	//scene.objects.push_front(&sphere6);
+	//scene.objects.push_front(&sphere7);
+	//scene.objects.push_front(&sphere8);
 
 	//RTLight light1 = RTLight(Point3d(1.0,1.0,4.0));
 	//scene.lights.push_front(&light1);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 16;
-	renderSettings.resolution = ResolutionSettings(850,480);
+	renderSettings.antiAlias = 1;
+	renderSettings.resolution = ResolutionSettings(425,240);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;
 	RayTracer rayTracer = RayTracer();

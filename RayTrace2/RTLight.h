@@ -1,6 +1,7 @@
 #pragma once
 #include <gmtl/Ray.h>
 #include <gmtl/Point.h>
+#include <gmtl/Plane.h>
 
 class LightCollisionResult {
 public:
@@ -30,4 +31,3 @@ public:
 	void setBrightness(double bright) { brightness = bright; }
 	void setPosition(gmtl::Point3d pos) { position = pos; }
 };
-

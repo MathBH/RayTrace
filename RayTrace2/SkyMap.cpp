@@ -5,8 +5,10 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define COLOR_FULL_SCALE 255.0 // TODO: maybe refactor coz its used in RTODevil which should be decoupled
 #include <iostream>
+#include <climits>
+#define COLOR_FULL_SCALE 255.0 // TODO: maybe refactor coz its used in RTODevil which should be decoupled
+
 
 
 void SkyMap::setImageData(std::vector<unsigned char> *imageData, double width, double height)
@@ -16,7 +18,15 @@ void SkyMap::setImageData(std::vector<unsigned char> *imageData, double width, d
 	ImageDataHeight = height;
 }
 
-ColorRGB SkyMap::hitSkyMap(gmtl::Rayd ray)
+void SkyMap::setLightData(std::vector<unsigned char>* lightData, double width, double height)
+{
+	if ((int)width == (int)ImageDataWidth && (int)height == (int)ImageDataHeight) {
+		LightData = lightData;
+		hasLightMap = true;
+	}
+}
+
+SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
 {
 	//TODO: add function to set sky rotation
 
@@ -26,10 +36,13 @@ ColorRGB SkyMap::hitSkyMap(gmtl::Rayd ray)
 		t = (numHits > 1 && t1 < t0) ? t1 : t0;
 		gmtl::Point3d colPos = ray.getOrigin() + ray.getDir() * t;
 		gmtl::Vec3d normal = collisionSphere.getCenter() - colPos;
+		normal = OffsetElevCache * normal;
+		normal = OffsetAzimCache * normal;
 		normal = gmtl::makeNormal(normal);
 
-		double u = asin(normal[0]) / M_PI + 0.5;
-		double v = asin(normal[1]) / M_PI + 0.5;
+		double u = atan2(normal[0],normal[2]) / (M_PI*2) + 0.5; // the reason you get two suns is coz this only takes a 180 range
+		// add the if statement about the z axis polarity to
+		double v = normal[1] * 0.5 + 0.5;
 
 		int x = (int)round(u * ImageDataWidth) % (int)ImageDataWidth;
 		int y = (int)round(v * ImageDataHeight) % (int)(ImageDataHeight);
@@ -42,12 +55,28 @@ ColorRGB SkyMap::hitSkyMap(gmtl::Rayd ray)
 		double red = (double)redi / COLOR_FULL_SCALE;
 		double green = (double)greeni / COLOR_FULL_SCALE;
 		double blue = (double)bluei / COLOR_FULL_SCALE;
+		ColorRGB materialColor = ColorRGB(red, green, blue);
 
-		return ColorRGB(red, green, blue);
+		if (hasLightMap) {
+			int lRedi = LightData[0][index];
+			int lGreeni = LightData[0][index + 1];
+			int lBluei = LightData[0][index + 2];
+			double lRed = 10.*((double)lRedi / COLOR_FULL_SCALE);
+			double lGreen = 10.*((double)lGreeni / COLOR_FULL_SCALE);
+			double lBlue = 10.*((double)lBluei / COLOR_FULL_SCALE);
+			//if (lRed > 1.) { lRed = 1.; }
+			//if (lGreen > 1.) { lGreen = 1.; }
+			//if (lBlue > 1.) { lBlue = 1.; }
+			ColorRGB lightColor = ColorRGB(lRed, lGreen, lBlue); //TODO: change light intensity by incidence angle
+			//std::cout << "\nlightVal [" << x << "," << y << "] : " << lightColor.R << '\n';
+			return SkyMapHit(materialColor,lightColor);
+		}
+
+		return SkyMapHit(materialColor);
 		//return ColorRGB(xVal, yVal, 1.);
 		//return ColorRGB((normal[0] - 1.)/2., (normal[1] - 1.)/2.,(normal[2] - 1.1)/2.);
 	}
-	return ColorRGB();
+	return SkyMapHit();
 	//RayCollisionResult result = collisionSphere.tryCollision(ray);
 	//if (!result.getCollided()) {
 	//	return ColorRGB();
