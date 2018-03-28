@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("renderMarble_test2.png");
+	output.setFilePath("renderRefract1.png");
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
@@ -39,18 +39,19 @@ int main(int argc, char** argv) {
 	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
 	skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
+	skyMap.setElevationOffset(-M_PI/32);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
-	scene.camera.position = gmtl::Point3d(0.01,0.5,5.0);
+	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.45,0.9,0.7),0.5));
-	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 0.5));
-	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6),0.5));
-	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7),0.5));
-	//SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0),0.5));
-	//SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 0.5));
-	//SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 0.5));
-	//SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 0.5));
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.45,0.9,0.7), 1.11));
+	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 1.33));
+	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6), 1.33));
+	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7), 1.33));
+	//SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0), 1.33));
+	//SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 1.33));
+	//SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 1.33));
+	//SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 1.33));
 	scene.objects.push_front(&sphere1);
 	//scene.objects.push_front(&sphere2);
 	//scene.objects.push_front(&sphere3);

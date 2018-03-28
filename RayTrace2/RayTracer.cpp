@@ -4,6 +4,8 @@
 #include <cmath>
 #include <stdio.h>
 //#include <boost/math/distributions/normal.hpp>
+#define AIR_REFRACTIVE_INDEX 1.00029
+#define EPSILON 0.000000001 // custom defined for now for the sake of control 
 
 using namespace gmtl;
 /*
@@ -33,6 +35,9 @@ void RayTracer::insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex) {
 	}
 }
 
+/*
+	For an incidence ray and a collision point, return a set of reflected rays
+*/
 std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	std::vector<Rayd> reflections = std::vector<Rayd>();
 	Vec3d incidenceVec = ray.getDir();
@@ -48,6 +53,62 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	//Normally distribute rays around the normal
 
 	return reflections;
+}
+
+/*
+	For an incidence ray and a collision point, return a set of refracted rays
+*/
+std::vector<Rayd> refract(Rayd ray, CollisionPoint colPoint) {
+	std::vector<Rayd> refractions = std::vector<Rayd>();
+
+	RTMaterial material = colPoint.getMaterial();
+	double refractiveIndex = material.getRefractiveIndex();
+
+	Vec3d incidenceVec = ray.getDir();
+	Vec3d normalVec = colPoint.getNormal();
+
+	double refractiveRatio;
+	double cosIAng;
+	double incAng;
+
+	//std::cout << "\nCOL NORMAL: <" << normalVec[0] << " , " << normalVec[1] << " , " << normalVec[2] << ">";
+
+	if (gmtl::dot(incidenceVec, normalVec) < 0.) // if the dot product of incidence and normal is negative, we are entering the medium, otherwise we are exiting
+	{
+		// Take note of:	n1/n2 ratio
+		//					cos(incidenceAngle)
+		//					incidenceAngle
+		refractiveRatio = AIR_REFRACTIVE_INDEX / refractiveIndex;
+		cosIAng = gmtl::dot(incidenceVec, -normalVec);
+		incAng = acos(cosIAng);
+		//std::cout << "\nENTER POS: <" << colPoint.getPosition()[0] << " , " << colPoint.getPosition()[1] << " , " << colPoint.getPosition()[2] << ">";
+		//std::cout << "\nENTER DIR: <" << incidenceVec[0] << " , " << incidenceVec[1] << " , " << incidenceVec[2] << ">";
+	}
+	else
+	{
+		// Take note of:	n1/n2 ratio
+		//					cos(incidenceAngle)
+		//					incidenceAngle
+		refractiveRatio = refractiveIndex / AIR_REFRACTIVE_INDEX ;
+		cosIAng = gmtl::dot(incidenceVec, normalVec);
+		incAng = acos(cosIAng);
+		//std::cout << "\nEXIT POS:<" << colPoint.getPosition()[0] << " , " << colPoint.getPosition()[1] << " , " << colPoint.getPosition()[2] << ">";
+		//std::cout << "\nEXIT DIR:<" << incidenceVec[0] << " , " << incidenceVec[1] << " , " << incidenceVec[2] << ">";
+	}
+
+	// Let RefractedRay = ForwardRay + DownwardRay
+	Vec3d forwardRay = refractiveRatio * (incidenceVec + cosIAng*normalVec);
+	Vec3d downwardRay = -normalVec * sqrt(1. - pow(refractiveRatio*sin(incAng),2.));
+
+	Vec3d refractionDir = forwardRay + downwardRay;
+	refractionDir = makeNormal(refractionDir);
+	Point3d refractionOrig = colPoint.getPosition() + refractionDir * EPSILON;
+	Rayd refractedRay = Rayd(refractionOrig, refractionDir);
+
+	refractions.push_back(refractedRay);
+	//std::cout << "\nREFRACT POS: <" << refractionOrig[0] << " , " << refractionOrig[1] << " , " << refractionOrig[2] << ">";
+	//std::cout << "\nREFRACT DIR: <" << refractionDir[0] << " , " << refractionDir[1] << " , " << refractionDir[2] << ">";
+	return refractions;
 }
 
 //Debug purpose only value
@@ -107,24 +168,31 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
 		//double distanceToPoint = gmtl::length(colToRay);
 		//double colorValue = 1. - (distanceToPoint / DOF);
 		ColorRGB materialColor = collisionPoint.getMaterial().getColor();
-		for (Rayd reflectedRay : reflect(ray, collisionPoint))
-		{
-			//setup probability distribution and multiply probability by ray values and add them up and average them out
-			// (adding the odds as denominator and resultant color as nominator)
-			// afterwards, clamp
-			RayCollisionResult reflectResult = scene->tryCollision(reflectedRay);
-			if (reflectResult.getCollided()) {
-				materialColor *= trace(scene, reflectedRay, life - 1);
-				//std::cout << "\nReflected ray collided\n";
-			}
-			else
-			{
-				//std::cout << "\nUSING SKY DATA\n";
-				SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
-				materialColor *= skyData.getColorData();
-				materialColor *= skyData.getLightData();
-			}
-
+		//for (Rayd reflectedRay : reflect(ray, collisionPoint))
+		//{
+		//	// TODO
+		//	// setup probability distribution and multiply probability by ray values and add them up and average them out
+		//	// (adding the odds as denominator and resultant color as nominator)
+		//	// afterwards, clamp
+		//
+		//	RayCollisionResult reflectResult = scene->tryCollision(reflectedRay);
+		//	if (reflectResult.getCollided()) {
+		//		materialColor *= trace(scene, reflectedRay, life - 1);
+		//		//std::cout << "\nReflected ray collided\n";
+		//	}
+		//	else
+		//	{
+		//		//std::cout << "\nUSING SKY DATA\n";
+		//		SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
+		//		materialColor *= skyData.getColorData();
+		//		materialColor *= skyData.getLightData();
+		//	}
+		//}
+		for (Rayd refractedRay : refract(ray, collisionPoint)) {
+			Vec3d direction = refractedRay.getDir();
+			materialColor *= trace(scene, refractedRay, life - 1);
+			//materialColor = ColorRGB(direction[0]*0.5 + 0.5, direction[1] * 0.5 + 0.5, direction[2] * 0.5 + 0.5);
+			//std::cout << "\nColor: <"<< materialColor.R << " , " << materialColor.G << " , " << materialColor.B << ">";
 		}
 		return materialColor;
 	}
