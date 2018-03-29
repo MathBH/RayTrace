@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("renderRefract1.png");
+	output.setFilePath("fresnel2.png");
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	scene.camera = Camera();
 	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.45,0.9,0.7), 1.11));
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,1.0,1.0), 1.3));
 	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 1.33));
 	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6), 1.33));
 	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7), 1.33));
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 	//scene.lights.push_front(&light1);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 1;
+	renderSettings.antiAlias = 16;
 	renderSettings.resolution = ResolutionSettings(425,240);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;

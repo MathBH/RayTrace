@@ -43,12 +43,15 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	Vec3d incidenceVec = ray.getDir();
 	Vec3d normalVec = colPoint.getNormal();
 
-	Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
-	newRayDir = makeNormal(newRayDir);
+	if (gmtl::dot(incidenceVec, normalVec) < 0.) // Only reflect if you are on the outside (internal reflection later)
+	{
+		Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
+		newRayDir = makeNormal(newRayDir);
 
-	Rayd newRay = Rayd(colPoint.getPosition(), newRayDir);
+		Rayd newRay = Rayd(colPoint.getPosition(), newRayDir);
 
-	reflections.push_back(newRay);
+		reflections.push_back(newRay);
+	}
 
 	//Normally distribute rays around the normal
 
@@ -167,34 +170,56 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
 		//Vec3d colToRay = collisionPoint.getPosition() - ray.getOrigin();
 		//double distanceToPoint = gmtl::length(colToRay);
 		//double colorValue = 1. - (distanceToPoint / DOF);
+
 		ColorRGB materialColor = collisionPoint.getMaterial().getColor();
-		//for (Rayd reflectedRay : reflect(ray, collisionPoint))
-		//{
-		//	// TODO
-		//	// setup probability distribution and multiply probability by ray values and add them up and average them out
-		//	// (adding the odds as denominator and resultant color as nominator)
-		//	// afterwards, clamp
-		//
-		//	RayCollisionResult reflectResult = scene->tryCollision(reflectedRay);
-		//	if (reflectResult.getCollided()) {
-		//		materialColor *= trace(scene, reflectedRay, life - 1);
-		//		//std::cout << "\nReflected ray collided\n";
-		//	}
-		//	else
-		//	{
-		//		//std::cout << "\nUSING SKY DATA\n";
-		//		SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
-		//		materialColor *= skyData.getColorData();
-		//		materialColor *= skyData.getLightData();
-		//	}
-		//}
+		ColorRGB reflectionColor = ColorRGB();
+		ColorRGB refractionColor = ColorRGB();
+
+		for (Rayd reflectedRay : reflect(ray, collisionPoint))
+		{
+			// TODO
+			// setup probability distribution and multiply probability by ray values and add them up and average them out
+			// (adding the odds as denominator and resultant color as nominator)
+			// afterwards, clamp
+		
+			RayCollisionResult reflectResult = scene->tryCollision(reflectedRay);
+			if (reflectResult.getCollided()) {
+				reflectionColor = trace(scene, reflectedRay, life - 1); //TODO: adjust to make it take an average for if multy reflect
+				//std::cout << "\nReflected ray collided\n";
+			}
+			else
+			{
+				//std::cout << "\nUSING SKY DATA\n";
+				SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
+				reflectionColor = skyData.getColorData();
+				reflectionColor *= skyData.getLightData(); //TODO: adjust to make it take an average for if multy reflect
+			}
+		}
 		for (Rayd refractedRay : refract(ray, collisionPoint)) {
-			Vec3d direction = refractedRay.getDir();
-			materialColor *= trace(scene, refractedRay, life - 1);
+
+
+			RayCollisionResult refractResult = scene->tryCollision(refractedRay);
+			if (refractResult.getCollided()) {
+				refractionColor = trace(scene, refractedRay, life - 1); //TODO: adjust to make it take an average for if multy refract
+				//std::cout << "\nReflected ray collided\n";
+			}
+			else
+			{
+				//std::cout << "\nUSING SKY DATA\n";
+				SkyMapHit skyData = scene->Sky.hitSkyMap(refractedRay);
+				refractionColor = skyData.getColorData();
+				refractionColor *= skyData.getLightData();//TODO: adjust to make it take an average for if multy refract
+			}
+
+			//Vec3d direction = refractedRay.getDir();
+			//refractionColor *= trace(scene, refractedRay, life - 1);
 			//materialColor = ColorRGB(direction[0]*0.5 + 0.5, direction[1] * 0.5 + 0.5, direction[2] * 0.5 + 0.5);
 			//std::cout << "\nColor: <"<< materialColor.R << " , " << materialColor.G << " , " << materialColor.B << ">";
 		}
-		return materialColor;
+		ColorRGB ColorMix = refractionColor*0.75;
+		ColorMix += reflectionColor*0.25;
+		ColorMix *= materialColor;
+		return ColorMix;
 	}
 	else
 	{
