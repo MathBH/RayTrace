@@ -1,6 +1,7 @@
 #include "SphereTraceable.h"
 #include <gmtl/intersection.h>
 #include <gmtl/Generate.h>
+#define EPSILON 0.000000001 // custom defined for now for the sake of control 
 
 RayCollisionResult SphereTraceable::tryCollision(gmtl::Rayd ray)
 {

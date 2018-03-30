@@ -48,7 +48,7 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 		Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
 		newRayDir = makeNormal(newRayDir);
 
-		Rayd newRay = Rayd(colPoint.getPosition(), newRayDir);
+		Rayd newRay = Rayd(colPoint.getPosition() + newRayDir * EPSILON, newRayDir);
 
 		reflections.push_back(newRay);
 	}
@@ -58,10 +58,19 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	return reflections;
 }
 
+//TODO: refactor and decide if to keep and move in header or find alternative
+class RefractionResult {
+public:
+	bool Exiting;
+	std::vector<Rayd> RefractedRays;
+	RefractionResult(std::vector<Rayd> refractedRays, bool exiting) : RefractedRays(refractedRays), Exiting(exiting) {}
+	~RefractionResult() {}
+};
+
 /*
 	For an incidence ray and a collision point, return a set of refracted rays
 */
-std::vector<Rayd> refract(Rayd ray, CollisionPoint colPoint) {
+RefractionResult refract(Rayd ray, CollisionPoint colPoint, CollisionPoint * lastCollision) {
 	std::vector<Rayd> refractions = std::vector<Rayd>();
 
 	RTMaterial material = colPoint.getMaterial();
@@ -76,18 +85,8 @@ std::vector<Rayd> refract(Rayd ray, CollisionPoint colPoint) {
 
 	//std::cout << "\nCOL NORMAL: <" << normalVec[0] << " , " << normalVec[1] << " , " << normalVec[2] << ">";
 
-	if (gmtl::dot(incidenceVec, normalVec) < 0.) // if the dot product of incidence and normal is negative, we are entering the medium, otherwise we are exiting
-	{
-		// Take note of:	n1/n2 ratio
-		//					cos(incidenceAngle)
-		//					incidenceAngle
-		refractiveRatio = AIR_REFRACTIVE_INDEX / refractiveIndex;
-		cosIAng = gmtl::dot(incidenceVec, -normalVec);
-		incAng = acos(cosIAng);
-		//std::cout << "\nENTER POS: <" << colPoint.getPosition()[0] << " , " << colPoint.getPosition()[1] << " , " << colPoint.getPosition()[2] << ">";
-		//std::cout << "\nENTER DIR: <" << incidenceVec[0] << " , " << incidenceVec[1] << " , " << incidenceVec[2] << ">";
-	}
-	else
+	bool exiting = gmtl::dot(incidenceVec, normalVec) > 0.;// if the dot product of incidence and normal is negative, we are entering the medium, otherwise we are exiting
+	if (exiting)
 	{
 		// Take note of:	n1/n2 ratio
 		//					cos(incidenceAngle)
@@ -97,6 +96,17 @@ std::vector<Rayd> refract(Rayd ray, CollisionPoint colPoint) {
 		incAng = acos(cosIAng);
 		//std::cout << "\nEXIT POS:<" << colPoint.getPosition()[0] << " , " << colPoint.getPosition()[1] << " , " << colPoint.getPosition()[2] << ">";
 		//std::cout << "\nEXIT DIR:<" << incidenceVec[0] << " , " << incidenceVec[1] << " , " << incidenceVec[2] << ">";
+	}
+	else
+	{
+		// Take note of:	n1/n2 ratio
+		//					cos(incidenceAngle)
+		//					incidenceAngle
+		refractiveRatio = AIR_REFRACTIVE_INDEX / refractiveIndex;
+		cosIAng = gmtl::dot(incidenceVec, -normalVec);
+		incAng = acos(cosIAng);
+		//std::cout << "\nENTER POS: <" << colPoint.getPosition()[0] << " , " << colPoint.getPosition()[1] << " , " << colPoint.getPosition()[2] << ">";
+		//std::cout << "\nENTER DIR: <" << incidenceVec[0] << " , " << incidenceVec[1] << " , " << incidenceVec[2] << ">";
 	}
 
 	// Let RefractedRay = ForwardRay + DownwardRay
@@ -111,13 +121,13 @@ std::vector<Rayd> refract(Rayd ray, CollisionPoint colPoint) {
 	refractions.push_back(refractedRay);
 	//std::cout << "\nREFRACT POS: <" << refractionOrig[0] << " , " << refractionOrig[1] << " , " << refractionOrig[2] << ">";
 	//std::cout << "\nREFRACT DIR: <" << refractionDir[0] << " , " << refractionDir[1] << " , " << refractionDir[2] << ">";
-	return refractions;
+	return RefractionResult(refractions,exiting);
 }
 
 //Debug purpose only value
 #define DOF 16.
 #define RAY_LIFE 200
-ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
+ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision)
 			//TODO: add parameter int life -	also first try collision with lights and then compare if closest object is closer than closest light
 			//									if it hits a light, return the light's diffuse color
 			//
@@ -192,14 +202,19 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
 				//std::cout << "\nUSING SKY DATA\n";
 				SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
 				reflectionColor = skyData.getColorData();
-				reflectionColor *= skyData.getLightData(); //TODO: adjust to make it take an average for if multy reflect
+				//reflectionColor *= skyData.getLightData(); //TODO: adjust to make it take an average for if multy reflect
 			}
 		}
-		for (Rayd refractedRay : refract(ray, collisionPoint)) {
 
+		RefractionResult refractionResult = refract(ray, collisionPoint, lastCollision);
+		for (Rayd refractedRay : refractionResult.RefractedRays) {
+			
+			if (refractionResult.Exiting) {
+				//TODO: distance between last collision - absorbtion thing
+			}
 
-			RayCollisionResult refractResult = scene->tryCollision(refractedRay);
-			if (refractResult.getCollided()) {
+			RayCollisionResult refractColResult = scene->tryCollision(refractedRay);
+			if (refractColResult.getCollided()) {
 				refractionColor = trace(scene, refractedRay, life - 1); //TODO: adjust to make it take an average for if multy refract
 				//std::cout << "\nReflected ray collided\n";
 			}
@@ -216,8 +231,8 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life)
 			//materialColor = ColorRGB(direction[0]*0.5 + 0.5, direction[1] * 0.5 + 0.5, direction[2] * 0.5 + 0.5);
 			//std::cout << "\nColor: <"<< materialColor.R << " , " << materialColor.G << " , " << materialColor.B << ">";
 		}
-		ColorRGB ColorMix = refractionColor*0.75;
-		ColorMix += reflectionColor*0.25;
+		ColorRGB ColorMix = refractionColor*0.35;
+		ColorMix += reflectionColor*0.65;
 		ColorMix *= materialColor;
 		return ColorMix;
 	}
