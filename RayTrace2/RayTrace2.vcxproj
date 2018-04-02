@@ -246,6 +246,7 @@
   <ItemGroup>
     <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="RTLight.cpp" />
+    <ClCompile Include="SkyLight.cpp" />
     <ClCompile Include="SkyMap.cpp" />
     <ClCompile Include="SphereTraceable.cpp" />
   </ItemGroup>
@@ -258,6 +259,7 @@
     <ClInclude Include="RTLight.h" />
     <ClInclude Include="RTOutput.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SkyLight.h" />
     <ClInclude Include="SkyMap.h" />
     <ClInclude Include="SphereTraceable.h" />
     <ClInclude Include="stb_image_write.h" />

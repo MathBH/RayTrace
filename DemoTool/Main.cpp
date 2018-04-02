@@ -28,23 +28,24 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("Render5.png");
+	output.setFilePath("Lighting1.png");
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
-	DevILImageRGB skyMapLightData = DevILImageRGB("skymaps/AboveTheSea_L.jpg");
+	//DevILImageRGB skyMapLightData = DevILImageRGB("skymaps/AboveTheSea_L.jpg");
 	SkyMap skyMap = SkyMap();
 	//skyMap.setForward(gmtl::Vec3d(1., 0., 0.));
 	//skyMap.setRight(gmtl::Vec3d(0., 0., 1.));
 	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
-	skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
+	//skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
 	skyMap.setElevationOffset(-M_PI/32);
+	skyMap.setLight(0.4, 1.0);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
 	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,1.0,1.0), 1.33));
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,1.0,1.0), ColorRGB(0.05,0.01,0.007), 1.33));
 	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 1.33));
 	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6), 1.33));
 	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7), 1.33));

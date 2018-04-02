@@ -33,6 +33,13 @@ public:
 		return *this;
 	}
 
+	ColorRGB& operator*=(const double val) {
+		this->R *= val;
+		this->G *= val;
+		this->B *= val;
+		return *this;
+	}
+
 	ColorRGB& operator=(const ColorRGB& otherColor) {
 		R = otherColor.R;
 		G = otherColor.G;
