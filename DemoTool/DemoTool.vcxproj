@@ -73,7 +73,7 @@
     <IncludePath>J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>J:\Users\Jen\Documents\OpenGL\Include;J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace\RayTrace2;C:\Users\Jen\source\repos\RayTrace2\RayTrace2;$(IncludePath)</IncludePath>
+    <IncludePath>J:\Users\Jen\Documents\OpenGL\Include;J:\usr\local\include;C:\Users\Jen\source\repos\RayTrace\RayTrace2;$(IncludePath)</IncludePath>
     <LibraryPath>J:\Users\Jen\Documents\OpenGL\Libraries;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
