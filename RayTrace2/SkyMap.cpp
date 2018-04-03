@@ -18,19 +18,12 @@ void SkyMap::setImageData(std::vector<unsigned char> *imageData, double width, d
 	ImageDataHeight = height;
 }
 
-//void SkyMap::setLightData(std::vector<unsigned char>* lightData, double width, double height)
-//{
-//	if ((int)width == (int)ImageDataWidth && (int)height == (int)ImageDataHeight) {
-//		LightData = lightData;
-//		hasLightMap = true;
-//	}
-//}
-
-void SkyMap::setLight(double u, double v)
+void SkyMap::setLightData(std::vector<unsigned char>* lightData, double width, double height)
 {
-	//if (u >= 0 && u < 1.) TODO: check for negative or out of bound input parameters
-	Light = SkyLight(u, v, DEFAULT_SKY_SIZE);
-	hasLight = true;
+	if ((int)width == (int)ImageDataWidth && (int)height == (int)ImageDataHeight) {
+		LightData = lightData;
+		hasLightMap = true;
+	}
 }
 
 SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
@@ -47,9 +40,9 @@ SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
 		normal = OffsetAzimCache * normal;
 		normal = gmtl::makeNormal(normal);
 
-		double u = atan2(normal[0],normal[2]) / (M_PI*2) + 0.5;
+		double u = atan2(normal[0],normal[2]) / (M_PI*2) + 0.5; // the reason you get two suns is coz this only takes a 180 range
+		// add the if statement about the z axis polarity to
 		double v = normal[1] * 0.5 + 0.5;
-
 
 		int x = (int)round(u * ImageDataWidth) % (int)ImageDataWidth;
 		int y = (int)round(v * ImageDataHeight) % (int)(ImageDataHeight);
@@ -64,20 +57,19 @@ SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
 		double blue = (double)bluei / COLOR_FULL_SCALE;
 		ColorRGB materialColor = ColorRGB(red, green, blue);
 
-		if (hasLight) {
-			double lightValue = Light.hitSkyLight(ray);
-			//int lRedi = LightData[0][index];
-			//int lGreeni = LightData[0][index + 1];
-			//int lBluei = LightData[0][index + 2];
-			//double lRed = 10.*((double)lRedi / COLOR_FULL_SCALE);
-			//double lGreen = 10.*((double)lGreeni / COLOR_FULL_SCALE);
-			//double lBlue = 10.*((double)lBluei / COLOR_FULL_SCALE);
-			////if (lRed > 1.) { lRed = 1.; }
-			////if (lGreen > 1.) { lGreen = 1.; }
-			////if (lBlue > 1.) { lBlue = 1.; }
-			//ColorRGB lightColor = ColorRGB(lRed, lGreen, lBlue); //TODO: change light intensity by incidence angle
-			////std::cout << "\nlightVal [" << x << "," << y << "] : " << lightColor.R << '\n';
-			return SkyMapHit(materialColor, lightValue);
+		if (hasLightMap) {
+			int lRedi = LightData[0][index];
+			int lGreeni = LightData[0][index + 1];
+			int lBluei = LightData[0][index + 2];
+			double lRed = 10.*((double)lRedi / COLOR_FULL_SCALE);
+			double lGreen = 10.*((double)lGreeni / COLOR_FULL_SCALE);
+			double lBlue = 10.*((double)lBluei / COLOR_FULL_SCALE);
+			//if (lRed > 1.) { lRed = 1.; }
+			//if (lGreen > 1.) { lGreen = 1.; }
+			//if (lBlue > 1.) { lBlue = 1.; }
+			ColorRGB lightColor = ColorRGB(lRed, lGreen, lBlue); //TODO: change light intensity by incidence angle
+			//std::cout << "\nlightVal [" << x << "," << y << "] : " << lightColor.R << '\n';
+			return SkyMapHit(materialColor,lightColor);
 		}
 
 		return SkyMapHit(materialColor);

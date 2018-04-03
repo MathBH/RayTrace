@@ -43,8 +43,8 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	Vec3d incidenceVec = ray.getDir();
 	Vec3d normalVec = colPoint.getNormal();
 
-	if (gmtl::dot(incidenceVec, normalVec) < 0.) // Only reflect if you are on the outside (not dealing with internal reflection right now)
-	{	//TODO: internal reflection
+	if (gmtl::dot(incidenceVec, normalVec) < 0.) // Only reflect if you are on the outside (internal reflection later)
+	{
 		Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
 		newRayDir = makeNormal(newRayDir);
 
@@ -182,10 +182,8 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 		//double colorValue = 1. - (distanceToPoint / DOF);
 
 		ColorRGB materialColor = collisionPoint.getMaterial().getColor();
-		ColorRGB materialAbsorbtion = collisionPoint.getMaterial().getAbsorbtion();
 		ColorRGB reflectionColor = ColorRGB();
 		ColorRGB refractionColor = ColorRGB();
-		double lightValue = 0.; // TODO: update for accounting for not only sky light
 
 		for (Rayd reflectedRay : reflect(ray, collisionPoint))
 		{
@@ -204,23 +202,20 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 				//std::cout << "\nUSING SKY DATA\n";
 				SkyMapHit skyData = scene->Sky.hitSkyMap(reflectedRay); // restore that thing where you have a light and color component and apply light component here
 				reflectionColor = skyData.getColorData();
-				lightValue = skyData.getLightValue();
 				//reflectionColor *= skyData.getLightData(); //TODO: adjust to make it take an average for if multy reflect
 			}
 		}
 
 		RefractionResult refractionResult = refract(ray, collisionPoint, lastCollision);
-		CollisionPoint * passOnCol = nullptr;
-
-		if (!refractionResult.Exiting) {
-			passOnCol = &collisionPoint;
-		}
-
 		for (Rayd refractedRay : refractionResult.RefractedRays) {
 			
+			if (refractionResult.Exiting) {
+				//TODO: distance between last collision - absorbtion thing
+			}
+
 			RayCollisionResult refractColResult = scene->tryCollision(refractedRay);
 			if (refractColResult.getCollided()) {
-				refractionColor = trace(scene, refractedRay, life - 1, passOnCol); //TODO: adjust to make it take an average for if multy refract
+				refractionColor = trace(scene, refractedRay, life - 1); //TODO: adjust to make it take an average for if multy refract
 				//std::cout << "\nReflected ray collided\n";
 			}
 			else
@@ -228,8 +223,7 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 				//std::cout << "\nUSING SKY DATA\n";
 				SkyMapHit skyData = scene->Sky.hitSkyMap(refractedRay);
 				refractionColor = skyData.getColorData();
-				lightValue = skyData.getLightValue();
-				//refractionColor *= skyData.getLightData();//TODO: adjust to make it take an average for if multy refract
+				refractionColor *= skyData.getLightData();//TODO: adjust to make it take an average for if multy refract
 			}
 
 			//Vec3d direction = refractedRay.getDir();
@@ -237,17 +231,8 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 			//materialColor = ColorRGB(direction[0]*0.5 + 0.5, direction[1] * 0.5 + 0.5, direction[2] * 0.5 + 0.5);
 			//std::cout << "\nColor: <"<< materialColor.R << " , " << materialColor.G << " , " << materialColor.B << ">";
 		}
-
-		if (refractionResult.Exiting && lastCollision != nullptr) {
-			Vec3d transmissionVector = collisionPoint.getPosition() - lastCollision->getPosition();
-			double transmissionLength = gmtl::length(transmissionVector);
-			//std::cout << "\nLEN: " << transmissionLength;
-			//materialAbsorbtion *= -transmissionLength;
-			materialAbsorbtion = ColorRGB(exp(-materialAbsorbtion.R*transmissionLength), exp(-materialAbsorbtion.G*transmissionLength), exp(-materialAbsorbtion.B*transmissionLength));
-			refractionColor *= materialAbsorbtion;
-		}
-		ColorRGB ColorMix = refractionColor*0.75;
-		ColorMix += reflectionColor*0.25;
+		ColorRGB ColorMix = refractionColor*0.35;
+		ColorMix += reflectionColor*0.65;
 		ColorMix *= materialColor;
 		return ColorMix;
 	}
@@ -292,7 +277,7 @@ int RayTracer::render() //TODO add filepath to render to
 			renderOutput->setValueAt(xIndex, yIndex, colorOut);
 		}
 		renderOutput->commit();
-		//std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
+		std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
 	}
 	return 0;
 }
