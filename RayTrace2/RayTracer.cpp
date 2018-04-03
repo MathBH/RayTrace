@@ -3,8 +3,9 @@
 #include <vector>
 #include <cmath>
 #include <stdio.h>
-#include "Constants.h"
 //#include <boost/math/distributions/normal.hpp>
+#define AIR_REFRACTIVE_INDEX 1.00029
+#define EPSILON 0.000000001 // custom defined for now for the sake of control 
 
 using namespace gmtl;
 /*
@@ -32,19 +33,6 @@ void RayTracer::insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex) {
 	for (int xIndex = 0; xIndex < renderSettings.resolution.width; xIndex++) {
 		renderOutput->setValueAt(xIndex, yIndex, pixelBuffer[xIndex]);
 	}
-}
-
-ColorRGB computeColorOutput(RenderData renderData) {
-	ColorRGB color = renderData.Color;
-	double lightValue = renderData.LightValue;
-	double redValue = 1 - exp(-(pow(lightValue*color.R, 2.) + lightValue *color.R));
-	double greenValue = 1 - exp(-(pow(lightValue*color.G, 2.) + lightValue *color.G));
-	double blueValue = 1 - exp(-(pow(lightValue*color.B, 2.) + lightValue *color.B));
-	//double redValue = (color.R*pow(1.+ lightValue,2.));
-	//double greenValue = (color.G*pow(1. + lightValue, 2.));
-	//double blueValue = (color.B*pow(1. + lightValue, 2.));
-	return ColorRGB(redValue, greenValue, blueValue);
-	//return color;
 }
 
 /*
@@ -139,8 +127,7 @@ RefractionResult refract(Rayd ray, CollisionPoint colPoint, CollisionPoint * las
 //Debug purpose only value
 #define DOF 16.
 #define RAY_LIFE 200
-#define LIGHT_ABSORBSION 0.5
-RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision)
+ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision)
 			//TODO: add parameter int life -	also first try collision with lights and then compare if closest object is closer than closest light
 			//									if it hits a light, return the light's diffuse color
 			//
@@ -183,11 +170,9 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 			//		color *= absorb;
 			//		OBJECT_ABSORB is an RGB value that describes how much of each color channel absorbs over distance.For example, a value of(8.0, 2.0, 0.1) would make red get absorbed the fastest, then green, then blue, so would result in a blueish, slightly green color object.
 {
-	double lightValue = 0.; // TODO: update for accounting for not only sky light
-
 	RayCollisionResult collisionResult = scene->tryCollision(ray);
 	if (life <= 0) {
-		return RenderData(ambientColor,lightValue);
+		return ambientColor;
 	}
 	if (collisionResult.getCollided())
 	{
@@ -200,6 +185,7 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 		ColorRGB materialAbsorbtion = collisionPoint.getMaterial().getAbsorbtion();
 		ColorRGB reflectionColor = ColorRGB();
 		ColorRGB refractionColor = ColorRGB();
+		double lightValue = 0.; // TODO: update for accounting for not only sky light
 
 		for (Rayd reflectedRay : reflect(ray, collisionPoint))
 		{
@@ -210,9 +196,7 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 		
 			RayCollisionResult reflectResult = scene->tryCollision(reflectedRay);
 			if (reflectResult.getCollided()) {
-				RenderData reflection = trace(scene, reflectedRay, life - 1); //TODO: adjust to make it take an average for if multy reflect
-				reflectionColor = reflection.Color;
-				lightValue = reflection.LightValue;
+				reflectionColor = trace(scene, reflectedRay, life - 1); //TODO: adjust to make it take an average for if multy reflect
 				//std::cout << "\nReflected ray collided\n";
 			}
 			else
@@ -236,9 +220,7 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 			
 			RayCollisionResult refractColResult = scene->tryCollision(refractedRay);
 			if (refractColResult.getCollided()) {
-				RenderData refraction = trace(scene, refractedRay, life - 1, passOnCol); //TODO: adjust to make it take an average for if multy refract
-				refractionColor = refraction.Color;
-				lightValue = refraction.LightValue;
+				refractionColor = trace(scene, refractedRay, life - 1, passOnCol); //TODO: adjust to make it take an average for if multy refract
 				//std::cout << "\nReflected ray collided\n";
 			}
 			else
@@ -246,7 +228,6 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 				//std::cout << "\nUSING SKY DATA\n";
 				SkyMapHit skyData = scene->Sky.hitSkyMap(refractedRay);
 				refractionColor = skyData.getColorData();
-				//lightValue = 1.;
 				lightValue = skyData.getLightValue();
 				//refractionColor *= skyData.getLightData();//TODO: adjust to make it take an average for if multy refract
 			}
@@ -264,22 +245,16 @@ RenderData RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint 
 			//materialAbsorbtion *= -transmissionLength;
 			materialAbsorbtion = ColorRGB(exp(-materialAbsorbtion.R*transmissionLength), exp(-materialAbsorbtion.G*transmissionLength), exp(-materialAbsorbtion.B*transmissionLength));
 			refractionColor *= materialAbsorbtion;
-			lightValue *= exp(-LIGHT_ABSORBSION*transmissionLength);
 		}
 		ColorRGB ColorMix = refractionColor*0.75;
 		ColorMix += reflectionColor*0.25;
 		ColorMix *= materialColor;
-		//RenderData data = RenderData(ColorMix, lightValue);
-		return RenderData(ColorMix,lightValue);
+		return ColorMix;
 	}
 	else
 	{
 		SkyMapHit skyData = scene->Sky.hitSkyMap(ray);
-		RenderData data = RenderData(skyData.getColorData(), 0.);
-		//ColorRGB materialColor = computeColorOutput(data);
-		//std::cout << "\nColor: <" << skyData.getColorData().R << " , " << skyData.getColorData().G << " , " << skyData.getColorData().B << ">";
-		//std::cout << "\nColorLit: <"<< materialColor.R << " , " << materialColor.G << " , " << materialColor.B << ">";
-		return RenderData(skyData.getColorData(),1.); //TODO: figure out light value default (probs 1. and then to infinity makes it super bright?)
+		return skyData.getColorData();
 	}
 }
 
@@ -310,21 +285,14 @@ int RayTracer::render() //TODO add filepath to render to
 			RayPacket pixelRays = rayIterator.getAt(xIndex, yIndex);
 			ColorRGB colorOut = ColorRGB(0.0,0.0,0.0);
 			for (Rayd ray : pixelRays) {
-				RenderData renderData = trace(scene, ray, RAY_LIFE);
-				double lightValue = renderData.LightValue;
-				if (lightValue < 1.) {
-				//std::cout << "\nlightValue: " << lightValue;
-				//	lightValue = 1.;
-				}
-				ColorRGB colorData = computeColorOutput(renderData);
-				colorOut += colorData;
+				colorOut += trace(scene, ray, RAY_LIFE);
 			}
 			colorOut = colorOut/(pow((double)renderSettings.antiAlias, 2.));
 			//std::cout << "\n[" << colorOut.R << ", " << colorOut.G << ", " << colorOut.B << "]";
 			renderOutput->setValueAt(xIndex, yIndex, colorOut);
 		}
 		renderOutput->commit();
-		std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
+		//std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
 	}
 	return 0;
 }

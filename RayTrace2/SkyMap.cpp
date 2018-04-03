@@ -26,7 +26,7 @@ void SkyMap::setImageData(std::vector<unsigned char> *imageData, double width, d
 //	}
 //}
 
-void SkyMap::setLight(double u, double v) //TODO: fix skylight to follow map offset
+void SkyMap::setLight(double u, double v)
 {
 	//if (u >= 0 && u < 1.) TODO: check for negative or out of bound input parameters
 	Light = SkyLight(u, v, DEFAULT_SKY_SIZE);
@@ -65,27 +65,7 @@ SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
 		ColorRGB materialColor = ColorRGB(red, green, blue);
 
 		if (hasLight) {
-			double lightValue = Light.lightAt(ray.getOrigin(), u, v);
-			//if (lightValue < 0.) // hitSkyLight specifies val < 0. if the ray did not hit
-			//{
-			//	// if skyLight is not hit, then ray is pointing downwards
-			//	// reflect the ray off an artificial "ground" at the skyMap position and the skyLight's up direction as the normal
-			//	gmtl::Vec3d incidenceVec = ray.getDir();
-			//	gmtl::Vec3d normalVec = Light.getNormal();
-			//
-			//	gmtl::Vec3d newRayDir = incidenceVec - 2.*dot(incidenceVec, normalVec) * normalVec;
-			//	newRayDir = makeNormal(newRayDir);
-			//
-			//	gmtl::Rayd newRay = gmtl::Rayd(colPos + newRayDir * EPSILON, newRayDir);
-			//	lightValue = Light.lightAt(newRay, u, v);
-			//	if (lightValue < 0.) {
-			//		return SkyMapHit(); // TODO: signal error in this case
-			//	}
-			//}
-			//if (!(lightValue < 0.5 && lightValue > -0.5)) {
-			//	std::cout << "\nlight val[" << colPos[0] << "] [" << colPos[1] << "] [" << colPos[2] << "]: " << lightValue;
-			//}
-
+			double lightValue = Light.hitSkyLight(ray);
 			//int lRedi = LightData[0][index];
 			//int lGreeni = LightData[0][index + 1];
 			//int lBluei = LightData[0][index + 2];

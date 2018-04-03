@@ -46,7 +46,7 @@ private:
 	//Helper function - TODO: refactor
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
 
-	RenderData trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision = nullptr);
+	ColorRGB trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision = nullptr);
 
 public:
 	RayTracer() : sceneSet(false), outputSet(false) {}
