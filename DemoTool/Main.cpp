@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("Lighting1.png");
+	output.setFilePath("Lighting9.png");
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
@@ -40,23 +40,23 @@ int main(int argc, char** argv) {
 	//skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
 	skyMap.setElevationOffset(-M_PI/32);
-	skyMap.setLight(0.4, 1.0);
+	skyMap.setLight(0.38020833333, 1.-0.49802442528);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
 	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,1.0,1.0), ColorRGB(0.05,0.01,0.007), 1.33));
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(1.0,1.0,1.0), ColorRGB(0.01,0.01,0.02), 1.33));
 	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 1.33));
 	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6), 1.33));
-	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7), 1.33));
-	//SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0), 1.33));
+	SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(1.0, 1.0, 1.0), ColorRGB(0.8, 0.8, 0.9), 1.56));
+	SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.5, -5.5), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), ColorRGB(0.05, 0.05, 0.07), 1.33));
 	//SphereTraceable sphere6 = SphereTraceable(Point3d(2.9, 0.3, -7.0), 0.5, RTMaterial(ColorRGB(1.0, 1.0, 1.0), 1.33));
 	//SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 1.33));
 	//SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 1.33));
 	scene.objects.push_front(&sphere1);
 	//scene.objects.push_front(&sphere2);
 	//scene.objects.push_front(&sphere3);
-	//scene.objects.push_front(&sphere4);
+	scene.objects.push_front(&sphere4);
 	//scene.objects.push_front(&sphere5);
 	//scene.objects.push_front(&sphere6);
 	//scene.objects.push_front(&sphere7);
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 	//scene.lights.push_front(&light1);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 1;
+	renderSettings.antiAlias = 16;
 	renderSettings.resolution = ResolutionSettings(425,240);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;

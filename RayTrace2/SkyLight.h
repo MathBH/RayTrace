@@ -2,7 +2,6 @@
 #include <gmtl/Ray.h>
 #include <gmtl/Plane.h>
 #include "ParameterTypes.h"
-#define DEFAULT_SUN_DISTANCE 9999.
 
 class SkyLight
 {
@@ -17,11 +16,14 @@ private:
 	double Distance;
 	double SunDistance;
 
+	double intensity;
+
 public:
 	SkyLight(double u, double v, double distance);
 	SkyLight();
 	~SkyLight();
 
-	double hitSkyLight(gmtl::Rayd ray);
+	double lightAt(gmtl::Point3d origin, double u, double v);
+	gmtl::Vec3d getNormal() { return LightPlane.getNormal(); }
 };
 

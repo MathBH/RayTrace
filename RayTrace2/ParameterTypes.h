@@ -100,3 +100,12 @@ public:
 	ResolutionSettings(Dimensions2D dim) : width(dim.X), height(dim.Y) {}
 	~ResolutionSettings(){}
 };
+
+class RenderData {
+public:
+	ColorRGB Color;
+	double LightValue;
+
+	RenderData(ColorRGB color, double lightValue) : Color(color), LightValue(lightValue) {}
+	~RenderData() {}
+};
