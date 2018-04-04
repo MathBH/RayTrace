@@ -36,6 +36,7 @@ Holds all items found in a ray traceable scene and provides an interface for acc
 */
 class RTScene {
 public:
+	ColorRGB ambientColor;
 	Camera camera;
 	SkyMap Sky;
 	std::forward_list<RTLight*> lights;

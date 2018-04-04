@@ -2,32 +2,41 @@
 #include <gmtl/Ray.h>
 #include <gmtl/Point.h>
 #include <gmtl/Plane.h>
-
-class LightCollisionResult {
-public:
-	bool collided;
-	double illumination;
-
-	LightCollisionResult() {}
-	~LightCollisionResult() {}
-};
+#include "ParameterTypes.h"
+#include <gmtl/Generate.h>
 
 class RTLight
 {
 private:
-	double radius;
-	double brightness;
-	double falloff;
-	gmtl::Point3d position;
+	double FalloffA;
+	double FalloffB;
+	double FalloffC;
+	ColorRGB Diffuse;
+	ColorRGB Specular;
+	gmtl::Point3d Position;
 
 public:
 	RTLight() {}
-	RTLight(gmtl::Point3d pos) : position(pos) {}
+	RTLight(gmtl::Point3d pos) : Position(pos) {}
+	RTLight(gmtl::Point3d pos, ColorRGB diffuse, ColorRGB specular, double falloffa, double falloffb, double falloffc) : Position(pos), Diffuse(diffuse), Specular(specular), FalloffA(falloffa), FalloffB(falloffb), FalloffC(falloffc){}
 	~RTLight() {}
 
-	LightCollisionResult tryCollision(const gmtl::Rayd ray);
-	gmtl::Point3d getPosition();
-	void setRadius(double rad) { radius = rad; }
-	void setBrightness(double bright) { brightness = bright; }
-	void setPosition(gmtl::Point3d pos) { position = pos; }
+	void setPosition(gmtl::Point3d pos) { Position = pos; }
+	gmtl::Point3d getPosition() { return Position; }
+
+	void setDiffuse(ColorRGB diffuse) { Diffuse = diffuse; }
+	ColorRGB getDiffuse() { return Diffuse; }
+
+	void setSpecular(ColorRGB specular) { Specular = specular; }
+	ColorRGB getSpecular() { return Specular; }
+
+	void setFalloff(double a, double b, double c) { FalloffA = a; FalloffB = b; FalloffC = c; }
+	double getFalloff(gmtl::Point3d objPos)
+	{
+		gmtl::Vec3d pathBetween = Position - objPos;
+		double distance = gmtl::length(pathBetween);
+		distance = abs(distance);
+		//std::cout << "\nHI: " << (1. / (pow((distance*FalloffA), 2.) + (distance*FalloffB) + FalloffC));
+		return (1. / (pow((distance*FalloffA),2.) + (distance*FalloffB) + FalloffC));
+	}
 };

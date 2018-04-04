@@ -28,24 +28,36 @@ int main(int argc, char** argv) {
 
 	// Setup Output
 	RTODevIL output = RTODevIL();
-	output.setFilePath("Render7.png");
+	output.setFilePath("glass.png");
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
-	DevILImageRGB skyMapLightData = DevILImageRGB("skymaps/AboveTheSea_L.jpg");
+	//DevILImageRGB skyMapLightData = DevILImageRGB("skymaps/AboveTheSea_L.jpg");
 	SkyMap skyMap = SkyMap();
+	RTLight light1 = RTLight(gmtl::Point3d(-50., 10., 37.0), ColorRGB(8000., 8000., 8000.), ColorRGB(8000., 8000., 8000.), 1., 1., 1.);
 	//skyMap.setForward(gmtl::Vec3d(1., 0., 0.));
 	//skyMap.setRight(gmtl::Vec3d(0., 0., 1.));
+	//skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
 	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
-	skyMap.setLightData(skyMapLightData.getImageData(), skyMapLightData.getWidth(), skyMapLightData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
 	skyMap.setElevationOffset(-M_PI/32);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
 	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
 	scene.Sky = skyMap;
-	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., RTMaterial(ColorRGB(0.9,0.9,1.0), ColorRGB(0., 0., 0.), 1.33, 0.3));
-	//SphereTraceable sphere2 = SphereTraceable(Point3d(-2.9, -0.3, -7.0), 0.5, RTMaterial(ColorRGB(0.01, 0.4, 0.3), 1.33));
+	scene.ambientColor = ColorRGB(0.062, 0.051, 0.07);
+
+	RTMaterial waterMat = RTMaterial(ColorRGB(1.0, 1.0, 1.0), ColorRGB(0.17, 0.19, 0.21), 1.56, 0.29);
+	RTMaterial otherMat = RTMaterial(ColorRGB(1.0, 1.0, 1.0), ColorRGB(1., 1., 1.), 1.56, 0.5);
+	otherMat.setDiffuse(ColorRGB(20.0, 20.0, 20.0));
+	otherMat.setSpecular(ColorRGB(100., 100., 100.));
+	otherMat.setShininess(10);
+	waterMat.setDiffuse(ColorRGB(20.0, 20.0, 20.0));
+	waterMat.setSpecular(ColorRGB(40., 40., 40.));
+	otherMat.setShininess(5);
+
+	SphereTraceable sphere1 = SphereTraceable(Point3d(0.0, 0.0, -6.0), 2., waterMat);
+	SphereTraceable sphere2 = SphereTraceable(Point3d(-2.5, 1.8, -7.0), 1., waterMat);
 	//SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5,0.01,0.6), 1.33));
 	//SphereTraceable sphere4 = SphereTraceable(Point3d(-2.5, 1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.1,0.4,0.7), 1.33));
 	//SphereTraceable sphere5 = SphereTraceable(Point3d(2.5, -1.3, -6.0), 1.0, RTMaterial(ColorRGB(0.0,1.0,1.0), 1.33));
@@ -53,7 +65,8 @@ int main(int argc, char** argv) {
 	//SphereTraceable sphere7 = SphereTraceable(Point3d(1.0, -2.3, -7.0), 0.5, RTMaterial(ColorRGB(0.5, 1.0, 0.0), 1.33));
 	//SphereTraceable sphere8 = SphereTraceable(Point3d(0.0, 0.0, -15.0), 8., RTMaterial(ColorRGB(0.3, 0.6, 0.7), 1.33));
 	scene.objects.push_front(&sphere1);
-	//scene.objects.push_front(&sphere2);
+	scene.objects.push_front(&sphere2);
+	scene.lights.push_front(&light1);
 	//scene.objects.push_front(&sphere3);
 	//scene.objects.push_front(&sphere4);
 	//scene.objects.push_front(&sphere5);
@@ -65,12 +78,12 @@ int main(int argc, char** argv) {
 	//scene.lights.push_front(&light1);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 1;
+	renderSettings.antiAlias = 8;
 	renderSettings.resolution = ResolutionSettings(425,240);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;
 	RayTracer rayTracer = RayTracer();
-	rayTracer.setAmbientColor(ColorRGB(1.0, 0.7, 0.5));
+	//rayTracer.setAmbientColor(ColorRGB(0.062, 0.051, 0.07));
 	rayTracer.setRenderSettings(renderSettings);
 	rayTracer.setOutput(&output);
 	rayTracer.setScene(&scene);

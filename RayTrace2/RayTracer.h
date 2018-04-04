@@ -37,7 +37,6 @@ private:
 	RTOutput* renderOutput;
 	RTScene* scene;
 	RTSettings renderSettings;
-	ColorRGB ambientColor;
 
 	bool sceneSet;
 	bool outputSet;
@@ -45,16 +44,15 @@ private:
 
 	//Helper function - TODO: refactor
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
+	
+	ColorRGB evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm);
+	ColorRGB evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, RTMaterial material);
 
 	ColorRGB trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision = nullptr);
 
 public:
 	RayTracer() : sceneSet(false), outputSet(false) {}
 	~RayTracer() {}
-
-	void setAmbientColor(ColorRGB color) {
-		ambientColor = color;
-	}
 
 	/*
 	Set render settings

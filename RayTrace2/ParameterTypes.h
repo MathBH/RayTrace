@@ -14,10 +14,10 @@ public:
 	ColorRGB(double r, double g, double b) : R(r), G(g), B(b) {}
 	~ColorRGB() {}
 
-	ColorRGB& operator+(const ColorRGB& otherColor) {
-		ColorRGB color(R + otherColor.R, G + otherColor.G, B + otherColor.B);
-		return color;
-	}
+	//ColorRGB& operator+(const ColorRGB& otherColor) {
+	//	ColorRGB output = ColorRGB(R + otherColor.R, G + otherColor.G, B + otherColor.B);
+	//	return output;
+	//}
 
 	ColorRGB& operator+=(const ColorRGB& otherColor) {
 		this->R += otherColor.R;
