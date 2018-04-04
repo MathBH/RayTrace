@@ -52,32 +52,26 @@ public:
 	RayCollisionResult tryCollision(const gmtl::Rayd ray) //TODO: refactor
 	{
 		bool foundCollision = false;
-		RayCollisionResult nearestCollisionResult = RayCollisionResult(false);
+		RayCollisionResult output = RayCollisionResult(false);
+		double shortestDistance = INFINITY;
 
 		for (TraceableObject * object : objects)
 		{
-			RayCollisionResult result = object->tryCollision(ray);
-			if (result.getCollided())
+			RayCollisionResult colResult = object->tryCollision(ray);
+			if (colResult.getCollided())
 			{
-				if (!foundCollision)
+				// Get the vectors betweenn the collision points and the ray's origin
+				Vec3d colToRay = colResult.getCollisionPoint().getPosition() - ray.getOrigin();
+				double colToRayLen = gmtl::length(colToRay);
+				// Compare the length of these vectors : this thus gives the distance from the collision
+				// to the ray and allows you to pick the first object in the way, ignoring the others
+				if (colToRayLen < shortestDistance)
 				{
-					nearestCollisionResult = result;
-					foundCollision = true;
-				}
-				else
-				{
-					// Get the vectors betweenn the collision points and the ray's origin
-					Vec3d colToRay = result.getCollisionPoint().getPosition() - ray.getOrigin();
-					Vec3d nearestestColToRay = nearestCollisionResult.getCollisionPoint().getPosition() - ray.getOrigin();
-					// Compare the length of these vectors : this thus gives the distance from the collision
-					// to the ray and allows you to pick the first object in the way, ignoring the others
-					if (gmtl::length(colToRay) < gmtl::length(nearestestColToRay))
-					{
-						nearestCollisionResult = result;
-					}
+					shortestDistance = colToRayLen;
+					output = colResult;
 				}
 			}
 		}
-		return nearestCollisionResult;
+		return output;
 	}
 };

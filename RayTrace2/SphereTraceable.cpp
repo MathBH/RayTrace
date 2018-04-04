@@ -5,12 +5,13 @@
 
 RayCollisionResult SphereTraceable::tryCollision(gmtl::Rayd ray)
 {
-	RayCollisionResult result = RayCollisionResult();
+	RayCollisionResult result = RayCollisionResult(false);
 	int numHits;
 	double t0, t1, t;
 
 	if (gmtl::intersect<double>(sphereData, ray, numHits, t0, t1)) {
-		t = (numHits > 1 && t1 < t0) ? t1 : t0;
+		t = (numHits > 1 && t1 < t0 && t1 > 0) ? t1 : t0;
+		if (t <= 0) { return result; }
 
 		gmtl::Point3d colPos = ray.getOrigin() + ray.getDir() * t;
 		gmtl::Vec3d normal = colPos - sphereData.getCenter();

@@ -18,6 +18,7 @@ public:
 	public:
 		double fov;
 		double zNear;
+		int RayLife;
 		RayCamSettings() {}
 		RayCamSettings(double f, double z): fov(f), zNear(z){}
 		~RayCamSettings() {}
@@ -37,6 +38,7 @@ private:
 	RTOutput* renderOutput;
 	RTScene* scene;
 	RTSettings renderSettings;
+	int RayLife;
 
 	bool sceneSet;
 	bool outputSet;
