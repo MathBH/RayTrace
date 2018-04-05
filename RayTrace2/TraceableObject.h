@@ -43,7 +43,7 @@ public:
 	}
 };
 
-class RayCollisionResult {
+class RayCollisionResult {	//TODO: add unique object ids to identify them when refracting
 private:
 	bool collided;
 	CollisionPoint collisionPoint;

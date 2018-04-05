@@ -9,6 +9,7 @@
 #include <gmtl/AxisAngle.h>
 #include <gmtl/Matrix.h>
 #include <gmtl/Generate.h>
+#include "TraceableObject.h"
 #define DEFAULT_SKY_MAP_UP gmtl::Vec3d(0.,1.,0.)
 #define DEFAULT_SKY_MAP_FORWARD gmtl::Vec3d(0.,0.,-1.)
 #define DEFAULT_SKY_MAP_RIGHT gmtl::Vec3d(1.,0.,0.)
@@ -62,6 +63,6 @@ public:
 	void setAzimutOffset(double azimut) { AzimutOffset.setAngle(azimut); gmtl::setRot(OffsetAzimCache, AzimutOffset); }
 	void setElevationOffset(double azimut) { ElevationOffset.setAngle(azimut); gmtl::setRot(OffsetElevCache, ElevationOffset); }
 
-	SkyMapHit hitSkyMap(gmtl::Rayd ray);
+	RayCollisionResult hitSkyMap(gmtl::Rayd ray);
 };
 

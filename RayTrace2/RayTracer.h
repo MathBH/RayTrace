@@ -32,6 +32,15 @@ public:
 	~RTSettings() {};
 };
 
+//TODO: refactor and decide if to keep and move in header or find alternative
+class RefractionResult {
+public:
+	double Distance;
+	Rayd RefractedRay;
+	RefractionResult(Rayd refractedRay, double distance) : RefractedRay(refractedRay), Distance(distance) {}
+	~RefractionResult() {}
+};
+
 class RayTracer
 {
 private:
@@ -49,6 +58,7 @@ private:
 	
 	ColorRGB evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm);
 	ColorRGB evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, RTMaterial material);
+	std::vector<RefractionResult> refract(Rayd ray, CollisionPoint colPoint, CollisionPoint * lastCollision);
 
 	ColorRGB trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision = nullptr);
 

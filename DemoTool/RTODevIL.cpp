@@ -1,9 +1,17 @@
 #include "RTODevIL.h"
 #include <iostream>
 #define COLOR_FULL_SCALE ((unsigned char) 0xFF)
-#define RED_LUM 0.299
-#define GREEN_LUM 0.587
-#define BLUE_LUM 0.114
+#define RED_LUMINANCE 0.299
+#define GREEN_LUMINANCE 0.587
+#define BLUE_LUMINANCE 0.114
+
+
+/*
+Calculate the weighted luminance for a given color
+*/
+double luminance(ColorRGB color) {
+	return color.R*RED_LUMINANCE + color.G*GREEN_LUMINANCE + color.B*BLUE_LUMINANCE;
+}
 
 /*
 	Initialize output of specified width and height
@@ -58,12 +66,22 @@ int RTODevIL::setValueAt(int x, int y, ColorRGB color)
 		int i = y * Width*BPP + x*BPP;
 
 		//double colMax = 1.;
+		//double lum = luminance(color);
+		//double sum = color.R + color.G + color.B;
 		double r = color.R;
 		double g = color.G;
 		double b = color.B;
+		//if (lum > 1.) {
+		//	r = r / lum;
+		//	g = g / lum;
+		//	b = b / lum;
+		//}
 		if (r > 1.) { r = 1.; }
 		if (g > 1.) { g = 1.; }
 		if (b > 1.) { b = 1.; }
+		if (r < 0.) { r = 0.; }
+		if (g < 0.) { g = 0.; }
+		if (b < 0.) { b = 0.; }
 
 		imageData[i] = COLOR_FULL_SCALE * r;
 		imageData[i+1] = COLOR_FULL_SCALE * g;

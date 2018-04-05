@@ -8,6 +8,8 @@
 #include <iostream>
 #include <climits>
 #define COLOR_FULL_SCALE 255.0 // TODO: maybe refactor coz its used in RTODevil which should be decoupled
+#define VACUUM_REFRACTIVE_INDEX 1.
+
 
 
 
@@ -26,7 +28,7 @@ void SkyMap::setLightData(std::vector<unsigned char>* lightData, double width, d
 	}
 }
 
-SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
+RayCollisionResult SkyMap::hitSkyMap(gmtl::Rayd ray)
 {
 	//TODO: add function to set sky rotation
 
@@ -56,27 +58,30 @@ SkyMapHit SkyMap::hitSkyMap(gmtl::Rayd ray)
 		double green = (double)greeni / COLOR_FULL_SCALE;
 		double blue = (double)bluei / COLOR_FULL_SCALE;
 		ColorRGB materialColor = ColorRGB(red, green, blue);
+		RTMaterial material = RTMaterial(materialColor, VACUUM_REFRACTIVE_INDEX);
 
-		if (hasLightMap) {
-			int lRedi = LightData[0][index];
-			int lGreeni = LightData[0][index + 1];
-			int lBluei = LightData[0][index + 2];
-			double lRed = 10.*((double)lRedi / COLOR_FULL_SCALE);
-			double lGreen = 10.*((double)lGreeni / COLOR_FULL_SCALE);
-			double lBlue = 10.*((double)lBluei / COLOR_FULL_SCALE);
-			//if (lRed > 1.) { lRed = 1.; }
-			//if (lGreen > 1.) { lGreen = 1.; }
-			//if (lBlue > 1.) { lBlue = 1.; }
-			ColorRGB lightColor = ColorRGB(lRed, lGreen, lBlue); //TODO: change light intensity by incidence angle
-			//std::cout << "\nlightVal [" << x << "," << y << "] : " << lightColor.R << '\n';
-			return SkyMapHit(materialColor,lightColor);
-		}
+		CollisionPoint collisionPoint = CollisionPoint(colPos, normal, material);
 
-		return SkyMapHit(materialColor);
+		//if (hasLightMap) {
+		//	int lRedi = LightData[0][index];
+		//	int lGreeni = LightData[0][index + 1];
+		//	int lBluei = LightData[0][index + 2];
+		//	double lRed = 10.*((double)lRedi / COLOR_FULL_SCALE);
+		//	double lGreen = 10.*((double)lGreeni / COLOR_FULL_SCALE);
+		//	double lBlue = 10.*((double)lBluei / COLOR_FULL_SCALE);
+		//	//if (lRed > 1.) { lRed = 1.; }
+		//	//if (lGreen > 1.) { lGreen = 1.; }
+		//	//if (lBlue > 1.) { lBlue = 1.; }
+		//	ColorRGB lightColor = ColorRGB(lRed, lGreen, lBlue); //TODO: change light intensity by incidence angle
+		//	//std::cout << "\nlightVal [" << x << "," << y << "] : " << lightColor.R << '\n';
+		//	return SkyMapHit(materialColor,lightColor);
+		//}
+
+		return RayCollisionResult(true, collisionPoint);
 		//return ColorRGB(xVal, yVal, 1.);
 		//return ColorRGB((normal[0] - 1.)/2., (normal[1] - 1.)/2.,(normal[2] - 1.1)/2.);
 	}
-	return SkyMapHit();
+	return RayCollisionResult(false);
 	//RayCollisionResult result = collisionSphere.tryCollision(ray);
 	//if (!result.getCollided()) {
 	//	return ColorRGB();

@@ -252,6 +252,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MathHelpers.h" />
     <ClInclude Include="ParameterTypes.h" />
     <ClInclude Include="RayCam.h" />
     <ClInclude Include="RayTracer.h" />
