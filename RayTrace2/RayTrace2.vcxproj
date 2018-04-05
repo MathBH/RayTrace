@@ -248,6 +248,7 @@
     <ClCompile Include="RTLight.cpp" />
     <ClCompile Include="SkyMap.cpp" />
     <ClCompile Include="SphereTraceable.cpp" />
+    <ClCompile Include="SphericalMapping.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -261,7 +262,10 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SkyMap.h" />
     <ClInclude Include="SphereTraceable.h" />
+    <ClInclude Include="SphericalMapping.h" />
     <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureMapping.h" />
     <ClInclude Include="TraceableObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,11 +7,8 @@
 #include <math.h>
 #include <iostream>
 #include <climits>
-#define COLOR_FULL_SCALE 255.0 // TODO: maybe refactor coz its used in RTODevil which should be decoupled
+#define RGBCOLOR_FULL_SCALE 255. // TODO: maybe refactor coz its used in RTODevil which should be decoupled
 #define VACUUM_REFRACTIVE_INDEX 1.
-
-
-
 
 void SkyMap::setImageData(std::vector<unsigned char> *imageData, double width, double height)
 {
@@ -42,8 +39,7 @@ RayCollisionResult SkyMap::hitSkyMap(gmtl::Rayd ray)
 		normal = OffsetAzimCache * normal;
 		normal = gmtl::makeNormal(normal);
 
-		double u = atan2(normal[0],normal[2]) / (M_PI*2) + 0.5; // the reason you get two suns is coz this only takes a 180 range
-		// add the if statement about the z axis polarity to
+		double u = atan2(normal[0],normal[2]) / (M_PI*2) + 0.5;
 		double v = normal[1] * 0.5 + 0.5;
 
 		int x = (int)round(u * ImageDataWidth) % (int)ImageDataWidth;
@@ -51,12 +47,12 @@ RayCollisionResult SkyMap::hitSkyMap(gmtl::Rayd ray)
 
 		int index = x * NumChannels + y * ImageDataWidth*NumChannels;
 
-		int redi = ImageData[0][index];				// [0] is used to access the vector since imageData is a pointer
+		int redi = ImageData[0][index];
 		int greeni = ImageData[0][index + 1];
 		int bluei = ImageData[0][index + 2];
-		double red = (double)redi / COLOR_FULL_SCALE;
-		double green = (double)greeni / COLOR_FULL_SCALE;
-		double blue = (double)bluei / COLOR_FULL_SCALE;
+		double red = (double)redi / RGBCOLOR_FULL_SCALE;
+		double green = (double)greeni / RGBCOLOR_FULL_SCALE;
+		double blue = (double)bluei / RGBCOLOR_FULL_SCALE;
 		ColorRGB materialColor = ColorRGB(red, green, blue);
 		RTMaterial material = RTMaterial(materialColor, VACUUM_REFRACTIVE_INDEX);
 

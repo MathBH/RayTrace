@@ -135,12 +135,14 @@
   <ItemGroup>
     <ClCompile Include="DevILGLWindow.cpp" />
     <ClCompile Include="DevILImage.cpp" />
+    <ClCompile Include="DevILTexture.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RTODevIL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DevILGLWindow.h" />
     <ClInclude Include="DevILImage.h" />
+    <ClInclude Include="DevILTexture.h" />
     <ClInclude Include="RTODevIL.h" />
   </ItemGroup>
   <ItemGroup>
