@@ -192,11 +192,8 @@ public:
 		double aspRat = resSet.width / resSet.height;
 
 		resolutionSettings = resSet;
-		std::cout << "\nfov: " << fov << '\n';
 		projectionPlane = ProjectionPlane(fov, zNear, aspRat);
 		antiAlias = antAl;
-		std::cout << "\nres: " << resSet.height << "," << resSet.width << '\n';
-		std::cout << "\nproj: " << projectionPlane.height << "," << projectionPlane.width << '\n';
 	}
 
 	~RayCam() {}

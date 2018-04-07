@@ -11,26 +11,25 @@
 #include <DiskTraceable.h>
 #include <FlatMapping.h>
 
-int main(int argc, char** argv) {
-	// do a thing that lists a bunch of demos that you choose by name and type out the output file name
+#define METAL_SPHERE_HD "metalSpheres"
 
-	std::cout << "Demo Tool\n";
 
-	// Setup Output
+
+int demoHighRes(string outputPath) {
 	RTODevIL output = RTODevIL();
-	output.setFilePath("HighResDemo01.png");
+	output.setFilePath(outputPath);
 
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
 	SkyMap skyMap = SkyMap();
 	RTLight light1 = RTLight(gmtl::Point3d(-7., 1., -7.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
 	RTLight light2 = RTLight(gmtl::Point3d(7., 1., -2.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
-	skyMap.setImageData(skyMapData.getImageData(),skyMapData.getWidth(), skyMapData.getHeight());
-	skyMap.setAzimutOffset(-(1.25*M_PI)/ 3);
-	skyMap.setElevationOffset(-M_PI/32);
+	skyMap.setImageData(skyMapData.getImageData(), skyMapData.getWidth(), skyMapData.getHeight());
+	skyMap.setAzimutOffset(-(1.25*M_PI) / 3);
+	skyMap.setElevationOffset(-M_PI / 32);
 	RTScene scene = RTScene();
 	scene.camera = Camera();
-	scene.camera.position = gmtl::Point3d(0.0,0.0,5.0);
+	scene.camera.position = gmtl::Point3d(0.0, 0.0, 5.0);
 	scene.Sky = skyMap;
 	scene.ambientColor = ColorRGB(0.062, 0.051, 0.07);
 
@@ -92,7 +91,7 @@ int main(int argc, char** argv) {
 	FlatMapping flatMap = FlatMapping(gmtl::Vec3d(1., 0., 0.), gmtl::Vec3d(0., 0., 1.), standRadius*2., standRadius*2.);
 	SphericalMapping sphereMap = SphericalMapping();
 
-	StandTraceable stand = StandTraceable(Point3d(0.,-2.,-7.), standRadius, &checkerMat);
+	StandTraceable stand = StandTraceable(Point3d(0., -2., -7.), standRadius, &checkerMat);
 	SphereTraceable sphere1 = SphereTraceable(Point3d(0, 0, -6.0), 2., &metalMat);
 	SphereTraceable sphere2 = SphereTraceable(Point3d(3., -1., -7.0), 1., &metalMat);
 	SphereTraceable sphere3 = SphereTraceable(Point3d(-1.0, 2.3, -7.0), 0.5, &metalMat);
@@ -121,8 +120,8 @@ int main(int argc, char** argv) {
 	//scene.objects.push_front(&sphere8);
 
 	RTSettings renderSettings = RTSettings();
-	renderSettings.antiAlias = 32;
-	renderSettings.resolution = ResolutionSettings(425,240);
+	renderSettings.antiAlias = 1;
+	renderSettings.resolution = ResolutionSettings(425, 240);
 	renderSettings.camSettings.fov = DEFAULT_FOV;
 	renderSettings.camSettings.zNear = DEFAULT_D_NEAR;
 	renderSettings.camSettings.RayLife = 8;
@@ -134,5 +133,23 @@ int main(int argc, char** argv) {
 	rayTracer.render();
 	output.commit();
 
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	// do a thing that lists a bunch of demos that you choose by name and type out the output file name
+	string inputBuffer;
+	std::cout << "Demo Tool\n";
+	while (true) {
+		std::cout << "\nAvailable Demos\n---------------\n\n- " << METAL_SPHERE_HD << "\n\n";
+		std::cin >> inputBuffer;
+
+		if (inputBuffer.compare(METAL_SPHERE_HD) == 0)
+		{
+			std::cout << "\nPlease specify output path (from DemoTool source)\n";
+			std::cin >> inputBuffer;
+			return demoHighRes(inputBuffer);
+		}
+	}
 	return 0;
 }

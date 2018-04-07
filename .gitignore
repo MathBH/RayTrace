@@ -26,6 +26,7 @@ bld/
 #Renders
 [Dd]emoTool/*.png
 [Dd]emoTool/[Ss]kymaps/
+[Dd]emoTool/[Tt]extures/
 
 # Visual Studio 2015 cache/options directory
 .vs/

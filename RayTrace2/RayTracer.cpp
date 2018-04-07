@@ -330,7 +330,7 @@ int RayTracer::render() //TODO add filepath to render to
 			renderOutput->setValueAt(xIndex, yIndex, colorOut);
 		}
 		renderOutput->commit();
-		//std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
+		std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
 	}
 	return 0;
 }
