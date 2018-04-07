@@ -20,7 +20,7 @@ using namespace gmtl;
 double R(Rayd ray, CollisionPoint collisionPoint) {
 
 	//double n1, double n2, gmtl::Vec3d normal, gmtl::Vec3d incidence, bool exiting, double reflectivity
-	RTMaterial material = collisionPoint.getMaterial();
+	MatSample material = collisionPoint.getMaterial();
 	gmtl::Vec3d normal = collisionPoint.getNormal();
 	gmtl::Vec3d incidence = ray.getDir();
 	incidence = gmtl::makeNormal(incidence);
@@ -119,7 +119,7 @@ std::vector<Rayd> reflect(Rayd ray, CollisionPoint colPoint) {
 	on the object.
 */
 Rayd _refract(Rayd ray, CollisionPoint colPoint) {
-	RTMaterial material = colPoint.getMaterial();
+	MatSample material = colPoint.getMaterial();
 	double refractiveIndex = material.getRefractiveIndex();
 
 	Vec3d incidenceVec = ray.getDir();
@@ -204,7 +204,7 @@ ColorRGB RayTracer::evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm)
 	return diffuse;
 }
 
-ColorRGB RayTracer::evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, RTMaterial material)
+ColorRGB RayTracer::evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, MatSample material)
 {
 	ColorRGB spec = ColorRGB();
 	for (RTLight * light : scene->lights)
@@ -241,8 +241,7 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 		gmtl::Vec3d incidence = ray.getDir();
 		incidence = gmtl::makeNormal(incidence);
 
-		RTMaterial material = collisionPoint.getMaterial();
-		ColorRGB outputColor = ColorRGB();
+		MatSample material = collisionPoint.getMaterial();
 		ColorRGB materialAbsorbtion = collisionPoint.getMaterial().getAbsorbtion();
 		ColorRGB reflectionColor = ColorRGB();
 		ColorRGB refractionColor = ColorRGB();
@@ -250,11 +249,17 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 		double r = R(ray, collisionPoint);
 		double t = T(ray, collisionPoint);
 
+		ColorRGB outputColor = ColorRGB();
+
 		// evaluate lighting values
+		ColorRGB ambientColor = material.getAmbient();
+		ambientColor *= scene->ambientColor;
 		ColorRGB diffuseColor = evaluateDiffuse(colPos, colNormal)*t;
 		diffuseColor *= material.getDiffuse();
 		ColorRGB specColor = evaluateSpec(colPos, colNormal, material)*r;
 		specColor *= material.getSpecular();
+
+		outputColor += ambientColor;
 		outputColor += diffuseColor;
 		outputColor += specColor;
 
@@ -285,8 +290,8 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 		if (skyColResult.getCollided())
 		{
 			CollisionPoint skyCollision = skyColResult.getCollisionPoint();
-			RTMaterial skyMat = skyCollision.getMaterial();
-			return skyMat.getColor();
+			MatSample skyMat = skyCollision.getMaterial();
+			return skyMat.getDiffuse();
 		}
 
 		return scene->ambientColor;
@@ -325,7 +330,7 @@ int RayTracer::render() //TODO add filepath to render to
 			renderOutput->setValueAt(xIndex, yIndex, colorOut);
 		}
 		renderOutput->commit();
-		std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
+		//std::cout << "\nprogress: " << (yIndex/(double)outputHeight)*100. << "%";
 	}
 	return 0;
 }

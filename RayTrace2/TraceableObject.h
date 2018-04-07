@@ -3,6 +3,7 @@
 #include <gmtl\Point.h>
 #include <gmtl\Ray.h>
 #include "Material.h"
+#include "AllTextures.h"
 
 #ifndef	DEFAULT_POINT_POS
 #define DEFAULT_POINT_POS gmtl::Point3d(0.0,0.0,0.0)
@@ -20,7 +21,7 @@
 class CollisionPoint
 {
 private:
-	RTMaterial material;
+	MatSample material;
 	gmtl::Vec3d normal;
 	gmtl::Point3d position;
 
@@ -28,7 +29,7 @@ public:
 
 	CollisionPoint() : normal(DEFAULT_POINT_NORM), position(DEFAULT_POINT_POS){}
 	CollisionPoint(gmtl::Point3d p, gmtl::Vec3d n) : normal(n), position(p){}
-	CollisionPoint(gmtl::Point3d p, gmtl::Vec3d n, RTMaterial mat) : normal(n), position(p), material(mat) {}
+	CollisionPoint(gmtl::Point3d p, gmtl::Vec3d n, MatSample mat) : normal(n), position(p), material(mat) {}
 
 	gmtl::Vec3d getNormal() {
 		return gmtl::Vec3d(normal);
@@ -38,7 +39,7 @@ public:
 		return gmtl::Point3d(position);
 	}
 
-	RTMaterial getMaterial() {
+	MatSample getMaterial() {
 		return material;
 	}
 };

@@ -30,6 +30,12 @@
     <ClCompile Include="SphericalMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DiskTraceable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RayCam.h">
@@ -78,6 +84,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SphericalMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AllTextures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HasMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UVMapped.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DiskTraceable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

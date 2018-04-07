@@ -2,12 +2,18 @@
 #include "TextureMapping.h"
 #include "ParameterTypes.h"
 #include <gmtl\Sphere.h>
-#include <gmtl\Point.h>
+#include <iostream>
 
-class SphericalMapping : public TextureMapping {
-private:
-	Texture & texture;
+/*
+	UVMap implementation for spherical objects
+*/
+class SphericalMapping : public UVMap {
 public:
-	void setTexture(Texture& tex) override;
-	ColorRGB getValueAt(gmtl::Point3d surfacePos, gmtl::Point3d center);
+	SphericalMapping() {}
+	~SphericalMapping() {}
+
+	/*
+		Takes a point relative to the center of a sphere and returns the UV texture coordinates
+	*/
+	UVCoord getUV(gmtl::Point3d position) override;
 };

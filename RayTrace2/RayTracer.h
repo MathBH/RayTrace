@@ -57,7 +57,7 @@ private:
 	void insertBufferLine(vector<ColorRGB> pixelBuffer, int yIndex);
 	
 	ColorRGB evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm);
-	ColorRGB evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, RTMaterial material);
+	ColorRGB evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, MatSample material);
 	std::vector<RefractionResult> refract(Rayd ray, CollisionPoint colPoint, CollisionPoint * lastCollision);
 
 	ColorRGB trace(RTScene * scene, Rayd ray, int life, CollisionPoint * lastCollision = nullptr);

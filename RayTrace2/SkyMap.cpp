@@ -54,7 +54,7 @@ RayCollisionResult SkyMap::hitSkyMap(gmtl::Rayd ray)
 		double green = (double)greeni / RGBCOLOR_FULL_SCALE;
 		double blue = (double)bluei / RGBCOLOR_FULL_SCALE;
 		ColorRGB materialColor = ColorRGB(red, green, blue);
-		RTMaterial material = RTMaterial(materialColor, VACUUM_REFRACTIVE_INDEX);
+		MatSample material = MatSample(materialColor, VACUUM_REFRACTIVE_INDEX);
 
 		CollisionPoint collisionPoint = CollisionPoint(colPos, normal, material);
 

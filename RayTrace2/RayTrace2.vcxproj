@@ -244,6 +244,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DiskTraceable.cpp" />
+    <ClCompile Include="FlatMapping.cpp" />
     <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="RTLight.cpp" />
     <ClCompile Include="SkyMap.cpp" />
@@ -251,7 +253,12 @@
     <ClCompile Include="SphericalMapping.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllTextures.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DiskTraceable.h" />
+    <ClInclude Include="FlatMapping.h" />
+    <ClInclude Include="GeometryHelpers.h" />
+    <ClInclude Include="HasMaterial.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathHelpers.h" />
     <ClInclude Include="ParameterTypes.h" />
@@ -267,6 +274,8 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureMapping.h" />
     <ClInclude Include="TraceableObject.h" />
+    <ClInclude Include="Transformations.h" />
+    <ClInclude Include="UVMapped.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

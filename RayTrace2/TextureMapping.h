@@ -1,11 +1,14 @@
 #pragma once
+#include <gmtl\Point.h>
 #include "Texture.h"
+
 /*
 	Interface for classes responsible for mapping 3d model coordinates to 2D texture files
 */
-
-class TextureMapping {
+class UVMap {
 public:
-	virtual void setTexture(Texture& tex) = 0;
+	UVMap() {}
+	~UVMap() {}
+	virtual UVCoord getUV(gmtl::Point3d position) = 0;
 };
 

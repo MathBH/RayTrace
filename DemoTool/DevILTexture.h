@@ -2,10 +2,10 @@
 #include <Texture.h>
 #include "DevILImage.h"
 #define BPP_RGB 3 // Bits per pixel RGB
-#define RGBCOLOR_FULL_SCALE ((unsigned char) 0xFF)
 #define BPP BPP_RGB // Bits per pixel (currently set to rgb)		//TODO: refactor duplicate in RTODevIL potentially make a file with RGB constants
+#define RGBCOLOR_FULL_SCALE 255. // TODO: maybe refactor coz its used in RTODevil which should be decoupled
 
-class DevILTexture : Texture
+class DevILTexture : public Texture
 {
 private:
 	DevILImageRGB * Source;
@@ -18,6 +18,6 @@ public:
 	~DevILTexture();
 
 	void setSource(DevILImageRGB* source);
-	ColorRGB getValueAt(int x, int y) override;
+	ColorRGB getValueAt(UVCoord coord) override;
 };
 
