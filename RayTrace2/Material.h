@@ -4,7 +4,7 @@
 #include "UVMapped.h"
 #include <gmtl/Generate.h>
 #define DEFAULT_RTMAT_DIFFUSE ColorRGB(1.0,1.0,1.0)
-#define DEFAULT_RTMAT_ABSORBTION ColorRGB(0.0,0.0,0.0)
+#define DEFAULT_RTMAT_ATTENUATION ColorRGB(0.0,0.0,0.0)
 #define DEFAULT_RTMAT_REFLECTIVITY 0.5
 #define DEFAULT_RTMAT_REFRACTIVE_INDEX 1.52
 #define DEFAULT_RTMAT_LIGHT_VALUE 0.
@@ -21,7 +21,7 @@ private:
 	ColorRGB Ambient;
 	ColorRGB Diffuse;
 	ColorRGB Specular;
-	ColorRGB Absorbtion;
+	ColorRGB Attenuation;
 	gmtl::Vec3d Normal;
 	double refractiveIndex;
 	double LightValue;
@@ -31,10 +31,10 @@ private:
 	bool NormalActive;
 	//double refractiveIndex;
 public:
-	MatSample() : Diffuse(DEFAULT_RTMAT_DIFFUSE), refractiveIndex(DEFAULT_RTMAT_REFRACTIVE_INDEX), Absorbtion(DEFAULT_RTMAT_ABSORBTION), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN) , NormalActive(false){}
-	MatSample(ColorRGB diffuse, double refract) : Diffuse(diffuse), refractiveIndex(refract), Absorbtion(DEFAULT_RTMAT_ABSORBTION), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
-	MatSample(ColorRGB diffuse, ColorRGB abs, double refract) : Diffuse(diffuse), refractiveIndex(refract), Absorbtion(abs), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
-	MatSample(ColorRGB diffuse, ColorRGB abs, double refract, double reflect) : Diffuse(diffuse), refractiveIndex(refract), Absorbtion(abs), reflectivity(reflect), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
+	MatSample() : Diffuse(DEFAULT_RTMAT_DIFFUSE), refractiveIndex(DEFAULT_RTMAT_REFRACTIVE_INDEX), Attenuation(DEFAULT_RTMAT_ATTENUATION), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN) , NormalActive(false){}
+	MatSample(ColorRGB diffuse, double refract) : Diffuse(diffuse), refractiveIndex(refract), Attenuation(DEFAULT_RTMAT_ATTENUATION), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
+	MatSample(ColorRGB diffuse, ColorRGB abs, double refract) : Diffuse(diffuse), refractiveIndex(refract), Attenuation(abs), LightValue(DEFAULT_RTMAT_LIGHT_VALUE), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
+	MatSample(ColorRGB diffuse, ColorRGB abs, double refract, double reflect) : Diffuse(diffuse), refractiveIndex(refract), Attenuation(abs), reflectivity(reflect), shininess(DEFAULT_SHININESS), NormalWeight(NORMAL_WEIGHT_MIN), NormalActive(false) {}
 
 	void setRefractiveIndex(double ref) { refractiveIndex = ref; }
 	double getRefractiveIndex() { return refractiveIndex; }
@@ -60,8 +60,8 @@ public:
 
 	bool normalIsActive() { return NormalActive; }
 
-	void setAbsorbtion(ColorRGB abs) { Absorbtion = abs; }
-	ColorRGB getAbsorbtion() { return Absorbtion; }
+	void setAttenuation(ColorRGB abs) { Attenuation = abs; }
+	ColorRGB getAttenuation() { return Attenuation; }
 
 	void setAmbient(ColorRGB ambient) { Ambient = ambient; }
 	ColorRGB getAmbient() { return Ambient; }
@@ -104,7 +104,7 @@ public:
 	void setRefractiveIndex(double ref) { MatVal.setRefractiveIndex(ref); }
 	void setReflectivity(double ref) { MatVal.setReflectivity(ref); }
 	void setShininess(double shiny) { MatVal.setShininess(shiny); }
-	void setAbsorbtion(ColorRGB abs) { MatVal.setAbsorbtion(abs); }
+	void setAttenuation(ColorRGB abs) { MatVal.setAttenuation(abs); }
 
 	MatSample getSample(UVCoord coord) override
 	{
@@ -127,7 +127,7 @@ private:
 	ColorRGB Ambient;
 	ColorRGB Diffuse;
 	ColorRGB Specular;
-	ColorRGB Absorbtion;
+	ColorRGB Attenuation;
 	double RefractiveIndex;
 	double Reflectivity;
 	double Shininess;
@@ -145,7 +145,7 @@ public:
 	void setAmbient(ColorRGB ambient) { Ambient = ambient; }
 	void setDiffuse(ColorRGB diffuse) { Diffuse = diffuse; }
 	void setSpecular(ColorRGB specular) { Specular = specular; }
-	void setAbsorbtion(ColorRGB absorbtion) { Absorbtion = absorbtion; }
+	void setAttenuation(ColorRGB attenuation) { Attenuation = attenuation; }
 	void setRefractiveIndex(double refractiveIndex) { RefractiveIndex = refractiveIndex; }
 	void setReflectivity(double reflectivity) { Reflectivity = reflectivity; }
 	void setShininess(double shininess) { Shininess = shininess; }
@@ -198,7 +198,7 @@ public:
 		{
 			matSample.setSpecular(Specular);
 		}
-		matSample.setAbsorbtion(Absorbtion);
+		matSample.setAttenuation(Attenuation);
 		matSample.setRefractiveIndex(RefractiveIndex);
 		matSample.setReflectivity(Reflectivity);
 		matSample.setShininess(Shininess);

@@ -5,7 +5,7 @@
 #include "ParameterTypes.h"
 #include <gmtl/Generate.h>
 
-class RTLight
+class Light
 {
 private:
 	double FalloffA;
@@ -16,10 +16,10 @@ private:
 	gmtl::Point3d Position;
 
 public:
-	RTLight() {}
-	RTLight(gmtl::Point3d pos) : Position(pos) {}
-	RTLight(gmtl::Point3d pos, ColorRGB diffuse, ColorRGB specular, double falloffa, double falloffb, double falloffc) : Position(pos), Diffuse(diffuse), Specular(specular), FalloffA(falloffa), FalloffB(falloffb), FalloffC(falloffc){}
-	~RTLight() {}
+	Light() {}
+	Light(gmtl::Point3d pos) : Position(pos) {}
+	Light(gmtl::Point3d pos, ColorRGB diffuse, ColorRGB specular, double falloffa, double falloffb, double falloffc) : Position(pos), Diffuse(diffuse), Specular(specular), FalloffA(falloffa), FalloffB(falloffb), FalloffC(falloffc){}
+	~Light() {}
 
 	void setPosition(gmtl::Point3d pos) { Position = pos; }
 	gmtl::Point3d getPosition() { return Position; }

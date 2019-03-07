@@ -22,8 +22,8 @@ int demoHighRes(string outputPath) {
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
 	SkyMap skyMap = SkyMap();
-	RTLight light1 = RTLight(gmtl::Point3d(-7., 1., -7.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
-	RTLight light2 = RTLight(gmtl::Point3d(7., 1., -2.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
+	Light light1 = Light(gmtl::Point3d(-7., 1., -7.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
+	Light light2 = Light(gmtl::Point3d(7., 1., -2.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
 	skyMap.setImageData(skyMapData.getImageData(), skyMapData.getWidth(), skyMapData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI) / 3);
 	skyMap.setElevationOffset(-M_PI / 32);
@@ -36,7 +36,7 @@ int demoHighRes(string outputPath) {
 	BasicMaterial metalMat = BasicMaterial();
 	metalMat.setDiffuse(ColorRGB(6.0, 7.1, 7.0));
 	metalMat.setSpecular(ColorRGB(8.5, 8.5, 8.5));
-	metalMat.setAbsorbtion(ColorRGB(0.15, 0.15, 0.19));
+	metalMat.setAttenuation(ColorRGB(0.15, 0.15, 0.19));
 	metalMat.setRefractiveIndex(8.11);
 	metalMat.setReflectivity(0.3);
 	metalMat.setShininess(32);
@@ -57,7 +57,7 @@ int demoHighRes(string outputPath) {
 	checkerMat.setAmbient(ColorRGB(0.2, 0.28, 0.3));
 	checkerMat.setDiffuse(ColorRGB(8.9, 9.1, 9.0));
 	checkerMat.setSpecular(ColorRGB(1.5, 1.5, 1.5));
-	checkerMat.setAbsorbtion(ColorRGB(0.15, 0.15, 0.19));
+	checkerMat.setAttenuation(ColorRGB(0.15, 0.15, 0.19));
 	checkerMat.setRefractiveIndex(1.12);
 	checkerMat.setReflectivity(0.04);
 	checkerMat.setShininess(19);
@@ -81,7 +81,7 @@ int demoHighRes(string outputPath) {
 	woodMat.setAmbient(ColorRGB(0.3, 0.3, 0.3));
 	woodMat.setDiffuse(ColorRGB(1.5, 1.5, 1.5));
 	woodMat.setSpecular(ColorRGB(1.5, 1.5, 1.5));
-	woodMat.setAbsorbtion(ColorRGB(0.15, 0.15, 0.19));
+	woodMat.setAttenuation(ColorRGB(0.15, 0.15, 0.19));
 	woodMat.setRefractiveIndex(1.57);
 	woodMat.setReflectivity(0.0);
 	woodMat.setShininess(2);
@@ -112,7 +112,7 @@ int demoHighRes(string outputPath) {
 	scene.objects.push_front(&sphere2);
 	scene.lights.push_front(&light1);
 	scene.lights.push_front(&light2);
-	//scene.objects.push_front(&sphere3);
+	scene.objects.push_front(&sphere3);
 	//scene.objects.push_front(&sphere4);
 	//scene.objects.push_front(&sphere5);
 	//scene.objects.push_front(&sphere6);

@@ -187,7 +187,7 @@ std::vector<RefractionResult> RayTracer::refract(Rayd ray, CollisionPoint colPoi
 ColorRGB RayTracer::evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm)
 {
 	ColorRGB diffuse = ColorRGB();
-	for (RTLight * light : scene->lights)
+	for (Light * light : scene->lights)
 	{
 		gmtl::Vec3d incidence = light->getPosition() - objPos;
 		incidence = gmtl::makeNormal(incidence);
@@ -207,7 +207,7 @@ ColorRGB RayTracer::evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm)
 ColorRGB RayTracer::evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, MatSample material)
 {
 	ColorRGB spec = ColorRGB();
-	for (RTLight * light : scene->lights)
+	for (Light * light : scene->lights)
 	{
 		gmtl::Vec3d incidence = light->getPosition() - objPos;
 		incidence = gmtl::makeNormal(incidence);
@@ -242,7 +242,7 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 		incidence = gmtl::makeNormal(incidence);
 
 		MatSample material = collisionPoint.getMaterial();
-		ColorRGB materialAbsorbtion = collisionPoint.getMaterial().getAbsorbtion();
+		ColorRGB materialAttenuation = collisionPoint.getMaterial().getAttenuation();
 		ColorRGB reflectionColor = ColorRGB();
 		ColorRGB refractionColor = ColorRGB();
 
@@ -277,8 +277,11 @@ ColorRGB RayTracer::trace(RTScene * scene, Rayd ray, int life, CollisionPoint * 
 			double travelDistance = refraction.Distance;
 			Rayd refractedRay = refraction.RefractedRay;
 			ColorRGB color = trace(scene, refractedRay, life - 1, nullptr);
-			ColorRGB absorbtion = ColorRGB(exp(-materialAbsorbtion.R*travelDistance), exp(-materialAbsorbtion.G*travelDistance), exp(-materialAbsorbtion.B*travelDistance));
-			color *= absorbtion;
+
+			// By Beer-Lambert Law, assuming a uniform attenuation, transmittance T=e^(-ul) for 
+			// attenuationCoefficient 'u' and travel distance 'l'
+			ColorRGB transmittance = ColorRGB(exp(-materialAttenuation.R*travelDistance), exp(-materialAttenuation.G*travelDistance), exp(-materialAttenuation.B*travelDistance));
+			color *= transmittance;
 
 			outputColor += color * t;
 		}

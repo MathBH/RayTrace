@@ -25,7 +25,7 @@ private:
 public:
 	Camera camera;
 	Objects objects;
-	std::forward_list<RTLight*> rayTraceLights;
+	std::forward_list<Light*> rayTraceLights;
 	Scene() {}
 };
 
@@ -39,7 +39,7 @@ public:
 	ColorRGB ambientColor;
 	Camera camera;
 	SkyMap Sky;
-	std::forward_list<RTLight*> lights;
+	std::forward_list<Light*> lights;
 	std::forward_list<TraceableObject*> objects;
 	RTScene() {}
 	
