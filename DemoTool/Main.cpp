@@ -22,8 +22,8 @@ int demoHighRes(string outputPath) {
 	// Setup Scene
 	DevILImageRGB skyMapData = DevILImageRGB("skymaps/AboveTheSea.jpg");
 	SkyMap skyMap = SkyMap();
-	RTLight light1 = RTLight(gmtl::Point3d(-7., 1., -7.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
-	RTLight light2 = RTLight(gmtl::Point3d(7., 1., -2.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
+	Light light1 = Light(gmtl::Point3d(-7., 1., -7.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
+	Light light2 = Light(gmtl::Point3d(7., 1., -2.0), ColorRGB(3.8, 3.8, 3.5), ColorRGB(8, 8, 5), 1., 0.7, 1.);
 	skyMap.setImageData(skyMapData.getImageData(), skyMapData.getWidth(), skyMapData.getHeight());
 	skyMap.setAzimutOffset(-(1.25*M_PI) / 3);
 	skyMap.setElevationOffset(-M_PI / 32);

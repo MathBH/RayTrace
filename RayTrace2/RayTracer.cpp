@@ -187,7 +187,7 @@ std::vector<RefractionResult> RayTracer::refract(Rayd ray, CollisionPoint colPoi
 ColorRGB RayTracer::evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm)
 {
 	ColorRGB diffuse = ColorRGB();
-	for (RTLight * light : scene->lights)
+	for (Light * light : scene->lights)
 	{
 		gmtl::Vec3d incidence = light->getPosition() - objPos;
 		incidence = gmtl::makeNormal(incidence);
@@ -207,7 +207,7 @@ ColorRGB RayTracer::evaluateDiffuse(gmtl::Point3d objPos, gmtl::Vec3d objNorm)
 ColorRGB RayTracer::evaluateSpec(gmtl::Point3d objPos, gmtl::Vec3d objNorm, MatSample material)
 {
 	ColorRGB spec = ColorRGB();
-	for (RTLight * light : scene->lights)
+	for (Light * light : scene->lights)
 	{
 		gmtl::Vec3d incidence = light->getPosition() - objPos;
 		incidence = gmtl::makeNormal(incidence);
